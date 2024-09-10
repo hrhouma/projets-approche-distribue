@@ -123,3 +123,63 @@ Cet exemple montre comment plusieurs services AWS peuvent interagir de manière 
 
 AWS Lambda et l'architecture serverless représentent une révolution dans le développement d'applications. En supprimant la complexité de la gestion des serveurs et de l'infrastructure, Lambda permet aux développeurs de se concentrer uniquement sur le développement de fonctionnalités et de solutions métier, tout en bénéficiant d'une facturation à l'usage, d'une mise à l'échelle automatique et d'une grande simplicité d'intégration avec l'ensemble de l'écosystème AWS.
 
+---
+# Annexe 01 - exemple simple d'utilisation d'AWS Lambda 
+---
+
+- Exemple d'architecture serverless avec AWS Lambda : Envoi d'une notification après téléchargement d'un fichier
+- Comment vous pouvez utiliser AWS Lambda pour automatiser une tâche simple comme l'envoi de notifications ?
+
+
+#### Étape 1 : Téléchargement d'un fichier dans un bucket S3
+Un utilisateur télécharge un fichier (par exemple, une image ou un document) dans un bucket Amazon S3.
+
+#### Étape 2 : Déclenchement d'une fonction Lambda
+Le téléchargement du fichier génère un événement dans S3. Cet événement déclenche automatiquement une fonction AWS Lambda.
+
+#### Étape 3 : Envoi d'une notification via SNS
+La fonction Lambda se contente d'envoyer une notification via **Amazon SNS** (Simple Notification Service) à une liste de destinataires, informant qu'un nouveau fichier a été téléchargé dans le bucket S3.
+
+#### Étape 4 : Fin du processus
+Une fois que la notification a été envoyée, le travail de la fonction Lambda est terminé.
+
+### Code Lambda en Python :
+Voici un exemple de code simple en Python qui pourrait être utilisé dans Lambda pour envoyer une notification avec SNS :
+
+```python
+import json
+import boto3
+
+def lambda_handler(event, context):
+    sns = boto3.client('sns')
+    
+    # Extraction des informations du fichier téléchargé
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    key = event['Records'][0]['s3']['object']['key']
+    
+    # Message à envoyer
+    message = f"Un nouveau fichier a été téléchargé dans le bucket {bucket} : {key}"
+    
+    # Envoi de la notification
+    response = sns.publish(
+        TopicArn='arn:aws:sns:region:123456789012:NomDuTopic',
+        Message=message,
+        Subject='Nouveau fichier dans S3'
+    )
+    
+    return {
+        'statusCode': 200,
+        'body': json.dumps('Notification envoyée avec succès!')
+    }
+```
+
+### Résumé des étapes clés :
+1. **S3** : L'utilisateur télécharge un fichier dans un bucket.
+2. **Lambda** : La fonction Lambda est déclenchée par l'événement de téléchargement et envoie une notification.
+3. **SNS** : Lambda envoie une notification à une liste d'abonnés via Amazon SNS.
+
+### Avantages de cette solution :
+- **Simplicité** : Il s'agit d'un flux simple, idéal pour des notifications ou des alertes en temps réel.
+- **Sans serveur** : Pas besoin de gérer de serveur ou d'infrastructure, tout est automatisé et évolutif.
+- **Rapidité** : Les notifications sont envoyées presque immédiatement après le téléchargement du fichier.
+
