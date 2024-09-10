@@ -1,5 +1,5 @@
 ---
-# Laboratoires des Modules
+# *Laboratoires des Modules*
 ----
 
 # 1. **Interroger des données en utilisant Athena**  
@@ -32,7 +32,7 @@
 
 
 ----
-# Résumé: 
+# *Résumé:* 
 ----
 
 ```
