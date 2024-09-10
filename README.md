@@ -1,1 +1,1 @@
-# projets-approche-distribue
+# projet-aws-lambda
