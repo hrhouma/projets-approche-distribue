@@ -1,4 +1,6 @@
 ---
+---
+---
 # *Laboratoires des Modules*
 ----
 
@@ -30,7 +32,8 @@
    _Nom anglais : Analyzing and Visualizing Streaming Data with Kinesis Data Firehose, OpenSearch Service, and OpenSearch Dashboards_  
    **Module :** Module 11 - Analyse et visualisation des données
 
-
+----
+----
 ----
 # *Résumé:* 
 ----
