@@ -1,6 +1,6 @@
 # Laboratoires des Modules
 
-1. **Interroger des données en utilisant Athena**  
+# 1. **Interroger des données en utilisant Athena**  
    _Nom anglais : Querying Data by Using Athena_  
    **Module :** Module 4 - Principes et modèles de conception pour les pipelines de données
 
