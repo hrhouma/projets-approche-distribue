@@ -1,5 +1,6 @@
 
 
+```
 +-------------------------------------------------------------+---------------------------------------------------------------+------------------------------------------------------------+
 |                     Nom du Laboratoire (Français)           |                      Nom du Laboratoire (Anglais)             |                            Module                           |
 +-------------------------------------------------------------+---------------------------------------------------------------+------------------------------------------------------------+
@@ -20,3 +21,5 @@
 | Analyser et visualiser des données en streaming avec        | Analyzing and Visualizing Streaming Data with Kinesis Data     | Module 11 - Analyse et visualisation des données            |
 | Kinesis Data Firehose, OpenSearch Service et Dashboards     | Firehose, OpenSearch Service, and OpenSearch Dashboards        |                                                            |
 +-------------------------------------------------------------+---------------------------------------------------------------+------------------------------------------------------------+
+```
+
