@@ -86,4 +86,3 @@ Ce workflow montre la manière dont Athena, AWS Glue, S3 et d'autres services AW
 
 L'image montre comment vous configurez Athena pour interagir avec des données brutes stockées dans S3, optimisez les requêtes avec des buckets et partitions, et simplifiez l'analyse de données via des vues. Finalement, les requêtes sont encapsulées via CloudFormation pour être partagées et utilisées par d'autres utilisateurs comme `Mary` avec des permissions limitées, testant leur utilisation dans un environnement Cloud9.
 
-Si vous avez d'autres questions ou des clarifications spécifiques, n'hésitez pas à demander !
