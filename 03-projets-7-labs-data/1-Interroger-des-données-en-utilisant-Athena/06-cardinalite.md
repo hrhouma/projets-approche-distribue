@@ -1,3 +1,15 @@
+# Cardinalité :
+
+La cardinalité fait référence au nombre de valeurs distinctes dans une colonne d'une table de données. Voici une explication des différents types de cardinalité :
+
+1. **Haute cardinalité** : Cela désigne une colonne qui contient un grand nombre de valeurs uniques ou très rares. Par exemple, une colonne `USER_ID` dans une table `USERS` aurait une haute cardinalité si chaque utilisateur avait un identifiant unique. D'autres exemples typiques incluent des adresses e-mail, des numéros de téléphone ou des identifiants d'utilisateur.
+
+2. **Cardinalité normale** : Ce type de cardinalité décrit une colonne qui contient un mélange de valeurs communes et rares. Par exemple, une colonne `LAST_NAME` dans une table de clients pourrait avoir une cardinalité normale. Certains noms de famille sont courants (comme "Dupont"), mais il y a aussi une grande diversité de noms moins fréquents.
+
+3. **Faible cardinalité** : Une colonne à faible cardinalité contient un nombre limité de valeurs distinctes. Un exemple courant est une colonne `NEW_CUSTOMER` qui pourrait ne contenir que deux valeurs, comme `Y` (Oui) ou `N` (Non), indiquant si un client est nouveau ou non.
+
+En résumé, la cardinalité donne une idée de la diversité des valeurs dans une colonne, ce qui peut être utile pour optimiser les bases de données et comprendre la nature des données.
+
 # Les trois types de cardinalité.
 
 ### 1. **Haute Cardinalité** :
