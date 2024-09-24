@@ -76,6 +76,29 @@ Imaginons un fichier CSV qui contient des informations sur les trajets en taxi. 
 
 Quand Mary exécute une requête sur les trajets payés en liquide en 2022, Athena peut sauter toutes les partitions sauf celle de 2022, et dans cette partition, elle peut directement accéder aux buckets qui contiennent les données de `paytype=liquide`, réduisant ainsi la quantité de données scannées et accélérant la requête.
 
+
+
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+# Vulgarisation: 
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+Imagine que tu as une grosse boîte pleine de jouets. Mais à chaque fois que tu veux un jouet, tu dois fouiller dans toute la boîte, ce qui prend beaucoup de temps, car il y a des milliers de jouets dedans.
+
+Alors, pour rendre ça plus facile, tu décides de faire **deux choses** :
+
+1. **Tu classes les jouets par catégories** : Les peluches dans une boîte, les voitures dans une autre boîte, et les puzzles dans une troisième boîte. C'est un peu comme si tu rangeais tes jouets par thème. Cela s’appelle le **partitionnement**. Maintenant, si tu veux une peluche, tu sais dans quelle boîte chercher, donc tu ne perds plus de temps à chercher dans les autres.
+
+2. **Tu divises encore plus les jouets dans chaque catégorie** : Par exemple, dans la boîte des peluches, tu mets les petits nounours dans un coin, les lapins dans un autre, et les pandas ailleurs. C’est ce qu’on appelle la **buckétisation** (ou "mettre dans des seaux"). Cela te permet de trouver encore plus rapidement ce que tu cherches !
+
+Donc, au lieu de fouiller dans toute ta chambre (qui serait très long), tu sais dans quelle boîte aller (grâce au **partitionnement**), et même dans quelle partie de la boîte chercher (grâce à la **buckétisation**). Ça rend tout beaucoup plus rapide !
+
+C'est exactement ce que font les ordinateurs avec les données : ils organisent tout pour que ce soit plus facile à trouver rapidement, comme toi avec tes jouets !
+
+
 -------------------------------------------------------------------
 # 7. **Conclusion :**
 -------------------------------------------------------------------
