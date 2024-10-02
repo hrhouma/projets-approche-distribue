@@ -1,4 +1,4 @@
-# Poyrquoi EMR ?
+# Pourquoi EMR ?
 
 Amazon EMR (Elastic MapReduce) présente plusieurs **avantages clés** dans le traitement des grandes quantités de données de journaux, comme dans votre scénario de traitement des données publicitaires, notamment en comparaison avec d'autres solutions. Voici pourquoi il se distingue :
 
