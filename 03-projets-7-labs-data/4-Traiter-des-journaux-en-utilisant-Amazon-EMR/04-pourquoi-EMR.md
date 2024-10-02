@@ -1,4 +1,5 @@
-Amazon EMR (Elastic MapReduce) présente plusieurs **avantages clés** dans le traitement des grandes quantités de données de journaux, comme dans votre scénario de traitement des données publicitaires, notamment en comparaison avec d'autres solutions. Voici pourquoi il se distingue :
+# Poyrquoi EMR ?
+- Amazon EMR (Elastic MapReduce) présente plusieurs **avantages clés** dans le traitement des grandes quantités de données de journaux, comme dans votre scénario de traitement des données publicitaires, notamment en comparaison avec d'autres solutions. Voici pourquoi il se distingue :
 
 ### 1. **Scalabilité**
 Amazon EMR vous permet de traiter des ensembles de données massifs en **provisionnant automatiquement** des clusters d'instances EC2. Contrairement à une gestion manuelle des clusters, où vous devriez configurer et gérer chaque instance individuellement, EMR ajuste dynamiquement la taille de votre cluster en fonction de la charge. Si vous n’utilisiez pas EMR, vous seriez confronté à une gestion manuelle de l’infrastructure, ce qui est complexe et difficile à faire évoluer rapidement.
