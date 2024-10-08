@@ -524,3 +524,141 @@ Sinon, si des tables sont trouvées, le workflow empruntera la route **Default**
 
 
 
+
+
+
+### Tâche 5 : Création de la table AWS Glue pour les données des taxis jaunes
+
+Dans cette tâche, vous allez définir la logique dans le workflow pour créer des tables AWS Glue si elles n'existent pas déjà.
+
+#### Ajouter une autre tâche **Athena StartQueryExecution** au workflow et la configurer pour créer une table
+
+1. Dans l'onglet **Actions**, recherchez **athena**.
+2. Faites glisser une tâche **StartQueryExecution** sur le canevas entre l'état **ChoiceStateFirstRun** et l'état **REPLACE ME TRUE STATE**.
+3. Avec la tâche **StartQueryExecution** sélectionnée, changez le nom de l'état en **Run Create data Table Query**.
+4. Pour le type d'intégration, laissez **Optimized** sélectionné.
+5. Pour les paramètres de l'API, remplacez le code JSON par défaut par le suivant. Remplacez `<FMI_1>` et `<FMI_2>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "CREATE EXTERNAL TABLE nyctaxidb.yellowtaxi_data_csv(  vendorid bigint,   tpep_pickup_datetime string,   tpep_dropoff_datetime string,   passenger_count bigint,   trip_distance double,   ratecodeid bigint,   store_and_fwd_flag string,   pulocationid bigint,   dolocationid bigint,   payment_type bigint,   fare_amount double,   extra double,   mta_tax double,   tip_amount double,   tolls_amount double,   improvement_surcharge double,   total_amount double,   congestion_surcharge double) ROW FORMAT DELIMITED   FIELDS TERMINATED BY ',' STORED AS INPUTFORMAT   'org.apache.hadoop.mapred.TextInputFormat' OUTPUTFORMAT   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat' LOCATION  's3://<FMI_1>/nyctaxidata/data/' TBLPROPERTIES (  'skip.header.line.count'='1')",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_2>/athena/"
+        }
+    }
+    ```
+
+6. **Analyse** : Vous avez examiné la structure des fichiers sources que vous avez copiés dans votre bucket **gluelab**. Les fichiers **yellow_tripdata_2020-01.csv** et **yellow_tripdata_2020-02.csv** sont au format CSV, avec des colonnes telles que **vendorid**, **tpep_pickup_datetime**, etc. Le fichier CSV ne définit pas les types de données pour chaque colonne, mais votre table AWS Glue les définit (par exemple, **bigint**, **string**). En définissant la table comme **EXTERNAL**, vous indiquez que les données resteront dans Amazon S3, à l'emplacement défini par la clause **LOCATION** (s3://<gluelab-bucket>/nyctaxidata/data/).
+
+7. Sélectionnez **Wait for task to complete - optional**.
+    - **Remarque** : Il est important que la table soit entièrement créée avant que le workflow ne continue.
+8. Pour **Next state**, choisissez **Go to end**.
+9. Sur le canevas, sélectionnez l'état **REPLACE ME TRUE STATE** et supprimez-le en appuyant sur la touche **Delete**.
+    - **Important** : Vérifiez que l'état **REPLACE ME TRUE STATE** n'est plus sur le canevas.
+
+10. Votre workflow devrait maintenant ressembler à l'image suivante :
+
+    *(Ajouter une image montrant le workflow avec la tâche Run Create data Table Query)*
+
+11. Choisissez **Save**.
+
+---
+
+#### Tester le workflow
+
+1. Choisissez **Start execution**.
+2. Pour **Name**, entrez **TaskFiveTest**, puis choisissez **Start execution**.
+    - Cela prendra quelques minutes pour que chaque étape du workflow passe du blanc au bleu, puis au vert. Attendez que le workflow se termine avec succès.
+
+    - Cette exécution ne créera pas de nouvelle base de données, mais comme elle ne trouvera aucune table dans la base de données, elle empruntera la route avec la tâche **Run Create data Table Query**, comme montré dans l'image ci-dessous.
+
+    *(Ajouter une image montrant le workflow avec la route Run Create data Table Query complétée)*
+
+---
+
+### Vérification de la création de la table dans la base de données AWS Glue lors de la première exécution du workflow
+
+1. Dans la console **S3**, accédez au contenu du dossier **athena** dans votre bucket **gluelab**.
+    - Remarquez que le dossier contient un autre fichier de métadonnées et des fichiers texte supplémentaires vides.
+    - **Remarque** : Les fichiers texte vides sont des fichiers de sortie basiques des tâches Step Functions. Vous pouvez les ignorer.
+
+2. Dans la console **AWS Glue**, dans le panneau de navigation, choisissez **Tables**.
+    - Remarquez qu'une table **yellowtaxi_data_csv** existe désormais. Il s'agit de la table AWS Glue qu'Athena a créée lorsque votre workflow Step Functions a invoqué la tâche **Run Create data Table Query**.
+    - Pour afficher les détails du schéma, choisissez le lien pour la table **yellowtaxi_data_csv**.
+
+    - Le schéma ressemble à l'image suivante :
+
+    *(Ajouter une image du schéma de la table des données de taxis jaunes)*
+
+---
+
+#### Exécuter à nouveau le workflow pour tester l'autre route de choix
+
+1. Dans la console **Step Functions**, choisissez le lien pour la machine d'état **WorkflowPOC**.
+2. Choisissez **Start execution**.
+    - Pour **Name**, entrez **NewTest**, puis choisissez **Start execution** à nouveau.
+    - **Analyse** : Vous voulez vous assurer que, si le workflow trouve la nouvelle table (ce qui devrait être le cas cette fois-ci), il emprunte l'autre route de choix et invoque l'état **REPLACE ME FALSE STATE**.
+
+    - Le workflow terminé ressemblera à l'image ci-dessous.
+
+    *(Ajouter une image montrant le workflow avec la route REPLACE ME FALSE STATE complétée)*
+
+3. Cette exécution n'a pas recréé la base de données ni tenté d'écraser la table créée lors de l'exécution précédente. Step Functions a cependant généré des fichiers de sortie dans Amazon S3 avec des métadonnées AWS Glue mises à jour.
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez créé une table AWS Glue pointant vers les données des taxis jaunes.
+
+---
+
+### Tâche 6 : Création de la table AWS Glue pour les données de correspondance (lookup data)
+
+Dans cette tâche, vous allez créer une autre table AWS Glue en mettant à jour et en exécutant le workflow Step Functions. La nouvelle table fera référence au fichier source **taxi_zone_lookup.csv** stocké dans Amazon S3. Une fois cette table créée, vous pourrez combiner la table de données des taxis jaunes avec la table de correspondance pour mieux comprendre les données.
+
+Rappelez-vous que la table de correspondance contient des informations sur les lieux d'activité des taxis. Voici un exemple de la structure des colonnes et des premières lignes de données dans le fichier CSV formaté :
+
+```
+"LocationID","Borough","Zone","service_zone"
+1,"EWR","Newark Airport","EWR"
+```
+
+La requête utilisera à nouveau **CTAS** (Create Table As Select) pour qu'Athena crée une table externe.
+
+---
+
+#### Mettre à jour le workflow pour créer la table de correspondance
+
+1. Toujours dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour ouvrir la machine d'état **WorkflowPOC** dans **Workflow Studio**.
+2. Dans le panneau **Actions**, recherchez **athena**.
+3. Faites glisser une tâche **StartQueryExecution** entre la tâche **Run Create data Table Query** et l'état **End**.
+
+4. Avec la tâche **StartQueryExecution** sélectionnée, changez le nom de l'état en **Run Create lookup Table Query**.
+5. Pour les paramètres de l'API, remplacez le code JSON par défaut par ce qui suit. Remplacez `<FMI_1>` et `<FMI_2>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "CREATE EXTERNAL TABLE nyctaxidb.nyctaxi_lookup_csv(  locationid bigint,   borough string,   zone string,   service_zone string,   latitude double,   longitude double)ROW FORMAT DELIMITED   FIELDS TERMINATED BY ',' STORED AS INPUTFORMAT   'org.apache.hadoop.mapred.TextInputFormat' OUTPUTFORMAT   'org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat'LOCATION  's3://<FMI_1>/nyctaxidata/lookup/' TBLPROPERTIES (  'skip.header.line.count'='1')",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_2>/athena/"
+        }
+    }
+    ```
+
+6. Sélectionnez **Wait for task to complete - optional**.
+7. Choisissez **Save**.
+
+---
+
+#### Supprimer la table AWS Glue existante
+
+Avant d'exécuter le workflow, vous devez d'abord supprimer la table que le workflow a précédemment créée.
+
+1. Dans la console **AWS Glue**, dans le panneau de navigation, choisissez **Tables**.
+2. Sélectionnez la table **yellowtaxi_data_csv**.
+3. Choisissez **Delete**.
+4
+
+
+
