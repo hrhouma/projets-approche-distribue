@@ -658,7 +658,101 @@ Avant d'exécuter le workflow, vous devez d'abord supprimer la table que le work
 1. Dans la console **AWS Glue**, dans le panneau de navigation, choisissez **Tables**.
 2. Sélectionnez la table **yellowtaxi_data_csv**.
 3. Choisissez **Delete**.
-4
+4. Lorsque vous êtes invité à confirmer, choisissez **Delete** à nouveau.
+
+---
+
+#### Exécuter le workflow mis à jour
+
+1. Dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour exécuter la machine d'état **WorkflowPOC**. Nommez le test **TaskSixTest**.
+2. Attendez que le workflow se termine avec succès.
+
+    - L'image ci-dessous montre le workflow une fois terminé.
+
+    *(Ajouter une image montrant le workflow avec la tâche Run Create lookup Table Query complétée)*
+
+3. Dans la console **AWS Glue**, dans le panneau de navigation, choisissez **Tables**.
+    - La base de données AWS Glue contient maintenant deux tables. La dernière exécution du workflow a recréé la table **yellowtaxi_data_csv** et a créé la table **nyctaxi_lookup_csv**.
+
+    **Remarque** : Cela peut prendre une ou deux minutes pour que les tables apparaissent.
+
+4. Observez le schéma de la table de correspondance (lookup table), qui ressemble à l'image ci-dessous.
+
+   *(Ajouter une image montrant le schéma de la table de correspondance)*
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez utilisé un workflow Step Functions pour créer deux tables dans la base de données AWS Glue.
+
+---
+
+### Tâche 7 : Optimisation du format des données et utilisation de la compression
+
+Dans cette tâche, vous allez optimiser les tables pour qu'elles soient plus efficaces à utiliser pour les parties prenantes. Vous allez modifier le stockage des données en utilisant le format **Parquet** et la compression **Snappy**. Ces optimisations permettront aux utilisateurs de travailler avec les données plus rapidement et à moindre coût.
+
+Les données des taxis couvrent plusieurs années et sont mises à jour au fil du temps, il est donc judicieux de compartimenter les données par série temporelle.
+
+Vous allez créer la table en utilisant la table **nyctaxi_lookup_csv** comme source. Vous déciderez de créer une version Parquet de la table ayant les mêmes noms de colonnes que la version CSV de la table et de déclarer **Snappy** comme type de compression.
+
+Pour ce faire, vous allez créer une tâche dans Step Functions pour exécuter la commande suivante et créer un fichier Parquet à partir des données source CSV.
+
+```sql
+CREATE table if not exists nyctaxidb.nyctaxi_lookup_parquet WITH (format='PARQUET',parquet_compression='SNAPPY', external_location = 's3://<FMI_1>/nyctaxidata/optimized-data-lookup/') AS SELECT locationid, borough, zone , service_zone , latitude ,longitude  FROM nyctaxidb.nyctaxi_lookup_csv
+```
+
+---
+
+#### Mettre à jour la machine d'état **WorkflowPOC** pour créer une table Parquet avec compression Snappy
+
+1. Dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour ouvrir la machine d'état **WorkflowPOC** dans **Workflow Studio**.
+2. Dans le panneau **Actions**, recherchez **athena**.
+3. Faites glisser une tâche **StartQueryExecution** sur le canevas entre la tâche **Run Create lookup Table Query** et l'état **End**.
+4. Avec la tâche **StartQueryExecution** sélectionnée, changez le nom de l'état en **Run Create Parquet lookup Table Query**.
+5. Pour les paramètres de l'API, remplacez le code JSON par défaut par le suivant. Remplacez `<FMI_1>` et `<FMI_2>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "CREATE table if not exists nyctaxidb.nyctaxi_lookup_parquet WITH (format='PARQUET',parquet_compression='SNAPPY', external_location = 's3://<FMI_1>/nyctaxidata/optimized-data-lookup/') AS SELECT locationid, borough, zone , service_zone , latitude ,longitude  FROM nyctaxidb.nyctaxi_lookup_csv",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_2>/athena/"
+        }
+    }
+    ```
+
+6. Sélectionnez **Wait for task to complete - optional**.
+7. Pour **Next state**, laissez **Go to end** sélectionné.
+8. Choisissez **Save**.
+
+---
+
+#### Tester en supprimant les tables existantes dans AWS Glue, en exécutant le workflow, et en vérifiant les résultats
+
+1. Dans la console **AWS Glue**, dans le panneau de navigation, choisissez **Tables**.
+    - Supprimez toutes les tables existantes dans la base de données AWS Glue. Cela garantira que le workflow suit le chemin correct lors de l'exécution suivante.
+
+2. Dans la console **S3**, accédez au contenu du dossier **athena** dans votre bucket **gluelab**.
+    - Choisissez le préfixe **nyctaxidata**.
+    - Sélectionnez le préfixe **optimized-data-lookup**, puis choisissez **Delete**.
+    - Sur la page **Delete objects**, saisissez **permanently delete** dans le champ au bas de la page, puis choisissez **Delete objects**.
+    - Choisissez **Close**.
+
+    **Explication** : Les permissions accordées à Athena ne permettent pas à Athena de supprimer les informations de table stockées dans Amazon S3. Vous devez donc supprimer manuellement le préfixe **optimized-data-lookup** dans votre bucket S3 avant d'exécuter le workflow. Si vous ne le faites pas, le workflow échouera pendant la tâche **Create Parquet lookup Table Query**.
+
+3. Dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour exécuter la machine d'état **WorkflowPOC**. Nommez le test **TaskSevenTest**.
+    - L'image ci-dessous montre le workflow une fois terminé.
+
+    *(Ajouter une image montrant le workflow avec la tâche Run Create Parquet lookup Table Query complétée)*
+
+4. Vérifiez que la nouvelle table a été créée.
+    - Dans la console **AWS Glue**, dans le panneau de navigation, choisissez **Tables**.
+    - Une nouvelle table **nyctaxi_lookup_parquet** a été créée. Le schéma de la table devrait ressembler à l'image suivante.
+
+    *(Ajouter une image du schéma de la table Parquet dans AWS Glue)*
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez créé la table de correspondance au format Parquet avec compression Snappy. Vous allez maintenant créer une autre table Parquet et pourrez ensuite combiner les informations des deux tables.
 
 
 
