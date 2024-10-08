@@ -1,6 +1,6 @@
-## 1. Différents types de données dans un contexte *Big Data* 
-## 2. Ce que signifie **dynamique**
-## 3. Pourquoi **Hudi** est utile ?
+#### 1. Différents types de données dans un contexte *Big Data* 
+#### 2. Ce que signifie **dynamique**
+#### 3. Pourquoi **Hudi** est utile ?
 
 
 ### 1. **Les types de données dans le Big Data**
