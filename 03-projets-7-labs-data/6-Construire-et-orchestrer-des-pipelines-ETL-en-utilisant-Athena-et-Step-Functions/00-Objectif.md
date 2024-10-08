@@ -2,7 +2,7 @@
 # 1 - Objectif: 
 ----------------------
 
-L'objectif de ce laboratoire est de vous apprendre à construire un pipeline ETL (Extraction, Transformation et Chargement) en utilisant plusieurs services AWS tels que **Step Functions**, **Amazon S3**, **AWS Glue Data Catalog**, et **Amazon Athena**. Voici une explication plus pédagogique du processus et des concepts abordés.
+L'objectif de ce laboratoire est de vous apprendre à construire un pipeline ETL (Extraction, Transformation et Chargement) en utilisant plusieurs services AWS tels que **Step Functions**, **Amazon S3**, **AWS Glue Data Catalog**, et **Amazon Athena**. 
 
 ### Qu'est-ce qu'un pipeline ETL ?
 Un pipeline ETL est un processus automatisé qui permet de collecter des données, les transformer pour qu'elles soient prêtes à être utilisées, et les charger dans un système de stockage ou d'analyse. Dans ce lab, vous travaillez sur un grand ensemble de données de taxis de New York, et vous allez automatiser la création d'une base de données et de tables dans AWS Glue, puis interroger ces tables avec Amazon Athena.
