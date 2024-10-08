@@ -1,5 +1,5 @@
 ----------------------
-# Objectif: 
+# 1 - Objectif: 
 ----------------------
 
 L'objectif de ce laboratoire est de vous apprendre à construire un pipeline ETL (Extraction, Transformation et Chargement) en utilisant plusieurs services AWS tels que **Step Functions**, **Amazon S3**, **AWS Glue Data Catalog**, et **Amazon Athena**. Voici une explication plus pédagogique du processus et des concepts abordés.
@@ -70,4 +70,101 @@ En résumé, ce lab vous apprend à construire un pipeline ETL réutilisable et 
 - **Parquet** : C'est comme compresser vos fichiers pour qu'ils prennent moins de place et se lisent plus vite.
 
 Tout le lab consiste à **automatiser** ces actions, pour que vous n'ayez plus à le faire à la main chaque fois que vous avez de nouvelles données.
+
+
+
+
+---------------------------------------------
+# 2 - Services:
+---------------------------------------------
+
+### 1. **Amazon S3 (Simple Storage Service)**  
+**Définition** : Amazon S3 est un service de stockage d'objets en ligne. Il permet de stocker et de récupérer des quantités illimitées de données, comme des fichiers CSV, des images, des vidéos, etc.
+
+**Usage dans le lab** :  
+- Utilisé pour stocker les fichiers de données des taxis de New York.
+- Stockage des résultats des requêtes SQL et des tables générées dans d'autres services (comme Athena).
+
+---
+
+### 2. **AWS Step Functions**  
+**Définition** : AWS Step Functions est un service qui permet de coordonner plusieurs services AWS dans un flux de travail (workflow) automatisé. C'est comme un chef d'orchestre qui fait en sorte que chaque étape se passe dans le bon ordre.
+
+**Usage dans le lab** :  
+- Orchestration du pipeline ETL.
+- Automatisation des tâches, comme vérifier l'existence de tables, créer des bases de données, exécuter des requêtes, etc.
+
+---
+
+### 3. **AWS Glue**  
+**Définition** : AWS Glue est un service qui permet de préparer, transformer, et organiser les données pour les rendre plus faciles à analyser. Il stocke les informations sur les tables (métadonnées) dans un **catalogue de données**.
+
+**Usage dans le lab** :  
+- Crée des bases de données et des tables qui organisent les données des taxis.
+- Partage les schémas des fichiers pour permettre des requêtes efficaces avec Athena.
+
+---
+
+### 4. **Amazon Athena**  
+**Définition** : Amazon Athena est un service qui permet d'analyser des données stockées dans Amazon S3 à l'aide de requêtes SQL. Il est sans serveur, ce qui signifie que vous n'avez pas besoin de gérer d'infrastructure.
+
+**Usage dans le lab** :  
+- Exécution de requêtes SQL pour créer des tables, des vues, et analyser les données de taxis directement depuis Amazon S3.
+- Création de **vues** pour combiner des données provenant de différentes tables.
+
+---
+
+### 5. **Parquet**  
+**Définition** : Parquet est un format de stockage de fichiers orienté colonnes qui permet une meilleure compression et des lectures plus rapides par rapport à des formats comme CSV.
+
+**Usage dans le lab** :  
+- Les données des taxis sont converties en format Parquet pour économiser de l'espace et améliorer la performance des requêtes SQL.
+- Les fichiers Parquet sont stockés dans Amazon S3 et utilisés dans Athena pour des requêtes plus rapides.
+
+---
+
+### 6. **Snappy**  
+**Définition** : Snappy est un algorithme de compression utilisé pour réduire la taille des fichiers sans perdre de données. Il est souvent utilisé avec des fichiers Parquet pour encore plus d'efficacité.
+
+**Usage dans le lab** :  
+- Utilisé pour compresser les fichiers Parquet afin de rendre le stockage et l'analyse encore plus rapides et économiques.
+
+---
+
+### 7. **IAM (Identity and Access Management)**  
+**Définition** : IAM est un service AWS qui gère les permissions et les accès aux services AWS. Il contrôle qui peut faire quoi dans AWS.
+
+**Usage dans le lab** :  
+- Un rôle IAM (StepLabRole) est utilisé pour donner des permissions aux workflows Step Functions, permettant aux services comme Athena, Glue et S3 de fonctionner ensemble en toute sécurité.
+
+---
+
+### 8. **AWS Cloud9**  
+**Définition** : AWS Cloud9 est un environnement de développement intégré (IDE) basé sur le cloud qui permet d'écrire, de tester et de déboguer des applications dans un navigateur.
+
+**Usage dans le lab** :  
+- Utilisé pour exécuter des commandes bash, manipuler les fichiers et interagir avec S3 pendant les étapes du laboratoire.
+
+---
+
+### 9. **AWS Lake Formation**  
+**Définition** : AWS Lake Formation simplifie la création, la sécurité et la gestion d'un lac de données (data lake) en automatisant des tâches telles que l'ingestion de données, le catalogage et la sécurisation des données.
+
+**Usage dans le lab** :  
+- Autorise la gestion et la sécurité des données utilisées dans Glue et Athena. 
+
+---
+
+### Synthèse simplifiée :
+
+- **S3** : Stocke les fichiers de données.
+- **Step Functions** : Automatise tout le processus.
+- **Glue** : Organise les données en bases et tables.
+- **Athena** : Exécute des requêtes SQL sur les données stockées.
+- **Parquet** et **Snappy** : Optimisent la taille et la vitesse des fichiers.
+- **IAM** : Gère les accès et permissions.
+- **Cloud9** : Un IDE pour écrire et exécuter des commandes.
+- **Lake Formation** : Aide à gérer les données sécurisées.
+
+
 
