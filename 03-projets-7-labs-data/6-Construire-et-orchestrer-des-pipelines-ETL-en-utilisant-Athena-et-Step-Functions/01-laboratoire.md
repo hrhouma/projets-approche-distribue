@@ -1,0 +1,526 @@
+## Présentation du lab et objectifs
+
+Dans ce laboratoire, vous utiliserez **AWS Step Functions** pour construire un pipeline ETL (Extract, Transform, Load) qui utilise **Amazon S3**, un **AWS Glue Data Catalog**, et **Amazon Athena** pour traiter un grand jeu de données.
+
+Les Step Functions permettent d'automatiser les processus métiers en créant des workflows, également appelés machines à états. Dans ce laboratoire, vous utiliserez Step Functions pour créer un workflow qui invoque Athena pour effectuer une série d'actions, comme exécuter une requête pour vérifier si des tables AWS Glue existent.
+
+Le catalogue de données AWS Glue fournit un stockage persistant des métadonnées, y compris les définitions de tables, les schémas et d'autres informations de contrôle, qui vous aideront à créer le pipeline ETL.
+
+**Athena** est un service de requêtes interactives sans serveur qui simplifie l'analyse des données stockées sur Amazon S3 en utilisant du SQL standard.
+
+Vous allez concevoir un workflow qui vérifiera si des tables AWS Glue existent. Si elles n'existent pas, le workflow invoquera des requêtes supplémentaires d'Athena pour les créer. Si les tables existent, le workflow exécutera une requête supplémentaire d'AWS Glue pour créer une vue dans Athena, qui combinera les données de deux tables. Vous pourrez ensuite interroger cette vue pour découvrir des informations intéressantes basées sur le temps et l'emplacement dans le grand jeu de données.
+
+À la fin de ce laboratoire, vous devrez être capable de :
+- Créer et tester un workflow avec Step Functions Studio.
+- Créer une base de données et des tables AWS Glue.
+- Stocker des données sur Amazon S3 au format Parquet pour économiser de l'espace de stockage et accélérer la lecture des données.
+- Partitionner des données sur Amazon S3 et utiliser la compression Snappy pour optimiser les performances.
+- Créer une vue dans Athena.
+- Ajouter une vue Athena à un workflow de Step Functions.
+- Construire un pipeline ETL en utilisant Step Functions, Amazon S3, Athena et AWS Glue.
+
+### Durée
+
+Ce laboratoire nécessite environ **120 minutes** pour être complété.
+
+---
+
+### Restrictions des services AWS
+
+Dans cet environnement de laboratoire, l'accès aux services et actions AWS peut être limité aux seuls services nécessaires pour accomplir les instructions du laboratoire. Vous pourriez rencontrer des erreurs si vous essayez d'accéder à d'autres services ou d'effectuer des actions non décrites dans ce laboratoire.
+
+---
+
+### Scénario
+
+Précédemment, vous avez créé une preuve de concept (PoC) pour démontrer comment utiliser AWS Glue pour inférer un schéma de données et ajuster manuellement les noms des colonnes. Ensuite, vous avez utilisé Athena pour interroger les données. Bien que cette approche plaise à Mary, elle doit effectuer de nombreuses étapes manuelles à chaque début de projet. Elle vous a demandé de créer un pipeline de données réutilisable qui l'aidera à démarrer rapidement de nouveaux projets de traitement de données.
+
+L'un des projets de Mary consiste à étudier les données de taxis de New York. Elle connaît les noms des colonnes des données de la table et a déjà créé des vues et des commandes SQL d'ingestion pour vous. Elle souhaite étudier les modèles d'utilisation des taxis à New York au début de 2020.
+
+Mary vous a demandé de stocker les données de la table partitionnées par mois, au format **Parquet** avec compression **Snappy** pour favoriser l'efficacité et réduire les coûts. Comme il s'agit d'une PoC, Mary accepte que vous utilisiez des valeurs codées en dur pour les noms des colonnes, les partitions, les vues et les informations de bucket S3.
+
+Mary a fourni les éléments suivants :
+- Des liens pour accéder aux données des taxis.
+- Les partitions qu'elle souhaite créer (pickup_year et pickup_month).
+- Des scripts SQL d'ingestion.
+- Un script qui créera une vue en SQL qu'elle veut utiliser pour ce projet.
+
+Lorsque vous commencez le laboratoire, l'environnement contient les ressources montrées dans le diagramme suivant.
+
+---
+
+### Diagramme d'architecture de début de lab
+
+*(diagramme montrant les ressources initiales disponibles dans le laboratoire)*
+![image](https://github.com/user-attachments/assets/8576d4ea-4007-4c3a-a5b8-63fc3985212b)
+
+
+---
+
+### Diagramme d'architecture à la fin du lab
+
+*( diagramme montrant les ressources créées après l'exécution complète du lab)*
+![image](https://github.com/user-attachments/assets/3c71d551-8f6f-47bd-9e3c-4912caff79de)
+
+
+---
+
+### Démarrage
+
+Vous avez décidé d'exploiter la flexibilité des Step Functions pour créer la logique du pipeline ETL. Avec Step Functions, vous pouvez gérer les exécutions initiales, où les données de la table et la vue SQL n'existent pas, ainsi que les exécutions ultérieures, où les tables et les vues existent déjà.
+
+Commençons !
+
+---
+
+### Accéder à la console de gestion AWS
+
+1. En haut de ces instructions, choisissez **Démarrer le Lab**.
+   - La session de laboratoire démarre.
+   - Un minuteur s'affiche en haut de la page et montre le temps restant de la session.
+   - Astuce : pour rafraîchir la durée de la session à tout moment, choisissez à nouveau **Démarrer le Lab** avant que le minuteur n'atteigne 0:00.
+
+2. Pour vous connecter à la console de gestion AWS, choisissez le lien **AWS** en haut à gauche.
+   - Un nouvel onglet du navigateur s'ouvre et vous connecte à la console.
+   - Astuce : Si un nouvel onglet ne s'ouvre pas, un message peut apparaître en haut de votre navigateur, indiquant que votre navigateur empêche le site d'ouvrir des fenêtres contextuelles. Choisissez la bannière ou l'icône, puis choisissez **Autoriser les fenêtres contextuelles**.
+
+---
+
+### Tâche 1 : Analyser les ressources existantes et charger les données sources
+
+#### Ouvrir les consoles de services AWS nécessaires
+
+Dans cette première tâche, vous allez analyser un rôle **IAM** et un bucket **S3** qui ont été créés pour vous. Ensuite, vous copierez les données sources des taxis à partir d'un bucket public S3 dans votre bucket. Vous utiliserez ces données plus tard dans le laboratoire lorsque vous créerez un workflow Step Functions.
+
+1. Ouvrez toutes les consoles de services AWS que vous utiliserez pendant ce laboratoire.
+   - Astuce : Comme vous utiliserez les consoles de nombreux services AWS tout au long de ce laboratoire, il sera plus facile d'avoir chaque console ouverte dans un onglet séparé du navigateur.
+
+2. Dans la barre de recherche à droite de **Services**, recherchez **Step Functions**.
+   - Ouvrez le menu contextuel (clic droit) sur l'entrée Step Functions qui apparaît dans les résultats de recherche et choisissez l'option pour ouvrir le lien dans un nouvel onglet.
+
+3. Répétez ce processus pour ouvrir les consoles AWS des services supplémentaires suivants :
+   - S3
+   - AWS Glue
+   - Athena
+   - Cloud9
+   - IAM
+
+4. Confirmez que vous avez maintenant chaque console de service AWS ouverte dans des onglets de navigateur distincts.
+
+---
+
+### Analyse du rôle IAM existant
+
+1. Dans la console **IAM**, dans le panneau de navigation, choisissez **Roles**.
+2. Recherchez **StepLabRole** et choisissez le lien pour le rôle lorsqu'il apparaît.
+3. Dans l'onglet **Permissions**, développez et examinez la politique **Policy-For-Step IAM** qui est attachée au rôle.
+
+
+
+
+
+### Analyse du rôle IAM existant (suite)
+
+En analysant la politique IAM attachée au rôle **StepLabRole**, vous constaterez que cette politique autorise le workflow Step Functions à faire des appels vers les services **Athena**, **Amazon S3**, **AWS Glue**, et **AWS Lake Formation**. Cela signifie que lorsque vous créerez le workflow dans une prochaine tâche, il pourra interagir avec ces services sans restriction.
+
+---
+
+### Analyse du bucket S3 existant
+
+1. Dans la console **S3**, dans la liste des buckets, choisissez le lien pour le bucket dont le nom contient **gluelab**.
+2. Remarquez qu'il ne contient actuellement aucun objet. Plus tard dans ce laboratoire, vous ferez référence à ce bucket dans le workflow Step Functions que vous configurerez.
+3. Copiez le nom du bucket dans un fichier texte pour une utilisation ultérieure dans ce laboratoire.
+
+---
+
+### Connexion à l'IDE AWS Cloud9
+
+1. Dans la console **Cloud9**, sur la page **Your environments**, sous **Cloud9 Instance**, choisissez **Open IDE**.
+
+---
+
+### Charger les données dans votre bucket à partir du jeu de données source
+
+Vous allez maintenant charger les données sources de taxis dans votre bucket S3.
+
+1. Exécutez les commandes suivantes dans le terminal bash de Cloud9. Remplacez `<FMI_1>` par le nom de votre bucket réel (celui qui contient **gluelab**).
+
+    ```bash
+    mybucket="<FMI_1>"
+    echo $mybucket
+    ```
+
+    Astuce : Vous pourriez être invité à confirmer le collage sécurisé de texte sur plusieurs lignes. Pour désactiver cette invite à l'avenir, décochez **Ask before pasting multiline code**. Ensuite, choisissez **Paste**.
+
+    **Analyse** : Ces commandes permettent de stocker le nom de votre bucket dans une variable shell. Vous avez ensuite affiché la valeur de cette variable dans le terminal. Cela sera utile lorsque vous exécuterez les prochaines commandes.
+
+2. Copiez les données des taxis jaunes de janvier dans un préfixe (dossier) de votre bucket appelé **nyctaxidata/data**.
+
+    ```bash
+    wget -qO- https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1/step-lab/yellow_tripdata_2020-01.csv | aws s3 cp - "s3://$mybucket/nyctaxidata/data/yellow_tripdata_2020-01.csv"
+    ```
+
+    **Remarque** : Cette commande prend environ 20 secondes à s'exécuter. Le fichier que vous copiez a une taille d'environ 500 Mo. Attendez que l'invite du terminal s'affiche à nouveau avant de continuer.
+
+3. Copiez les données des taxis jaunes de février dans le même dossier de votre bucket.
+
+    ```bash
+    wget -qO- https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1/step-lab/yellow_tripdata_2020-02.csv | aws s3 cp - "s3://$mybucket/nyctaxidata/data/yellow_tripdata_2020-02.csv"
+    ```
+
+    **Astuce** : Dans une solution en production, vous incluriez probablement plusieurs années de données, mais pour cette preuve de concept (PoC), l'utilisation de deux mois de données suffira.
+
+4. Copiez les informations de localisation (table de correspondance) dans un préfixe de votre bucket appelé **nyctaxidata/lookup**.
+
+    **Important** : L'espace dans le nom du fichier **taxi _zone_lookup.csv** est intentionnel.
+
+    ```bash
+    wget -qO- https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1/step-lab/taxi+_zone_lookup.csv | aws s3 cp - "s3://$mybucket/nyctaxidata/lookup/taxi _zone_lookup.csv"
+    ```
+
+---
+
+### Analyse de la structure des données que vous avez copiées
+
+Les données dans la table de correspondance (lookup table) ont la structure suivante. Voici les premières lignes du fichier :
+
+```
+"LocationID","Borough","Zone","service_zone"
+1,"EWR","Newark Airport","EWR"
+2,"Queens","Jamaica Bay","Boro Zone"
+3,"Bronx","Allerton/Pelham Gardens","Boro Zone"
+4,"Manhattan","Alphabet City","Yellow Zone"
+5,"Staten Island","Arden Heights","Boro Zone"
+6,"Staten Island","Arrochar/Fort Wadsworth","Boro Zone"
+7,"Queens","Astoria","Boro Zone"
+8,"Queens","Astoria Park","Boro Zone"
+```
+
+**Analyse** : La structure est définie par la liste des noms de colonnes sur la première ligne. Mary est familière avec ces noms de colonnes ; par conséquent, les commandes SQL qu'elle a fournies fonctionneront sans modification plus tard dans le laboratoire.
+
+La structure des fichiers de données des taxis jaunes pour janvier et février est similaire à celle-ci :
+
+```
+VendorID,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,RatecodeID,store_and_fwd_flag,PULocationID,DOLocationID,payment_type,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge
+1,2020-01-01 00:28:15,2020-01-01 00:33:03,1,1.20,1,N,238,239,1,6,3,0.5,1.47,0,0.3,11.27,2.5
+1,2020-01-01 00:35:39,2020-01-01 00:43:04,1,1.20,1,N,239,238,1,7,3,0.5,1.5,0,0.3,12.3,2.5
+1,2020-01-01 00:47:41,2020-01-01 00:53:52,1,.60,1,N,238,238,1,6,3,0.5,1,0,0.3,10.8,2.5
+```
+
+Comme pour le fichier de table de correspondance, la première ligne de chaque fichier définit les noms de colonnes.
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez chargé avec succès les données sources. Vous pouvez maintenant commencer à construire le pipeline.
+
+---
+
+### Tâche 2 : Automatiser la création d'une base de données AWS Glue
+
+Dans cette tâche, vous allez créer un workflow Step Functions qui utilisera Athena pour vérifier si une base de données AWS Glue existe. Si la base de données n'existe pas, Athena la créera.
+
+#### Commencer à créer un workflow
+
+1. Dans la console **Step Functions**, pour ouvrir le panneau de navigation, choisissez l'icône de menu (☰), puis choisissez **State machines**.
+2. Choisissez **Create state machine**.
+3. Choisissez **Cancel** lorsque l'écran des templates apparaît.
+   - L'interface **Step Functions Workflow Studio** s'affiche.
+
+#### Conception du workflow en utilisant l'interface Workflow Studio
+
+1. Si un message **Welcome to Workflow Studio** apparaît, fermez-le en choisissant l'icône **X**.
+2. Remarquez qu'un workflow de démarrage, avec des tâches **Start** et **End**, est déjà défini, comme montré dans l'image ci-dessous.
+
+   *(Ajouter une image montrant le workflow de démarrage avec les tâches Start et End)*
+
+3. Dans le panneau **Actions** à gauche, recherchez **Athena**.
+4. Faites glisser la tâche **StartQueryExecution** vers le canevas, entre les tâches **Start** et **End**, comme illustré ci-dessous.
+
+   *(Ajouter une image montrant la tâche StartQueryExecution sur le canevas)*
+
+#### Configurer la tâche
+
+1. Dans le panneau **Inspector** à droite :
+   - Changez le nom de l'état en **Create Glue DB**.
+   - Gardez le type d'intégration comme **Optimized**.
+   - Pour les paramètres de l'API, remplacez le code JSON par défaut par le suivant. Remplacez `<FMI_1>` par le nom réel de votre bucket (celui contenant **gluelab**).
+
+     ```json
+     {
+         "QueryString": "CREATE DATABASE if not exists nyctaxidb",
+         "WorkGroup": "primary",
+         "ResultConfiguration": {
+             "OutputLocation": "s3://<FMI_1>/athena/"
+         }
+     }
+     ```
+
+2. Sélectionnez **Wait for task to complete - optional**.
+   - **Remarque** : Cela garantit que le workflow attendra que la tâche soit terminée avant de continuer vers d'autres tâches en aval. Cette tâche est terminée lorsque Athena vérifie que la base de données existe ou la crée.
+3. Gardez **Next state** sur **Go to end**.
+4. En haut de la page, choisissez **Create**.
+
+---
+
+### Tester le workflow
+
+1. Maintenant que vous avez créé un workflow, exécutez-le et observez ce qui se passe lors de cette première exécution.
+   - Choisissez **Start execution**.
+   - Pour **Name**, entrez **TaskTwoTest** et choisissez **Start execution**.
+
+   **
+
+Important** : Assurez-vous de nommer vos tests **Start execution** exactement comme indiqué dans ces instructions, sinon vous pourriez ne pas recevoir la totalité des points lorsque vous soumettez le laboratoire pour un score.
+
+2. Dans l'onglet **Details** en haut de la page, le statut indique d'abord **Running**.
+
+   *(Ajouter une image montrant l'état Create Glue DB en bleu dans l'inspecteur de graphe)*
+
+3. Attendez une minute ou deux pendant que le workflow s'exécute.
+   - Lorsque l'étape **Create Glue DB** devient verte, cela indique que l'étape a réussi.
+
+   *(Ajouter une image montrant l'étape Create Glue DB en vert dans l'inspecteur de graphe)*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### Vérification de la création des fichiers de résultats dans le bucket S3
+
+1. Dans la console **S3**, choisissez le lien pour le bucket **gluelab**. Si vous êtes déjà sur cette page, utilisez l'icône de **rafraîchissement** pour actualiser la page.
+2. Vous devriez voir un nouveau préfixe (dossier) nommé **athena** dans le bucket.
+3. Choisissez le lien **athena** pour voir son contenu.
+   - Le dossier contient un fichier texte. Remarquez que la taille du fichier est de 0 B, ce qui indique que le fichier est vide.
+
+---
+
+### Vérification de la création de la base de données AWS Glue
+
+1. Dans la console **AWS Glue**, dans le panneau de navigation, sous **Data Catalog**, choisissez **Databases**.
+2. Sélectionnez la base de données **nyctaxidb**.
+   - Remarquez que la base de données ne contient actuellement aucune table. Cela est prévu, et vous ajouterez des étapes supplémentaires dans le workflow pour créer les tables. Cependant, vous avez déjà fait de grands progrès !
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez créé avec succès une base de données AWS Glue en utilisant un workflow Step Functions.
+
+---
+
+### Tâche 3 : Création de la tâche pour vérifier si les tables existent dans la base de données AWS Glue
+
+Dans cette tâche, vous allez mettre à jour le workflow afin qu'il vérifie si des tables existent dans la base de données AWS Glue que vous venez de créer.
+
+#### Ajouter une nouvelle tâche au workflow
+
+1. Dans la console **Step Functions**, choisissez la machine d'état **WorkflowPOC**, puis choisissez **Edit**.
+2. Dans le panneau **Actions**, recherchez **Athena**.
+3. Faites glisser une autre tâche **StartQueryExecution** sur le canevas entre la tâche **Create Glue DB** et la tâche **End**.
+
+---
+
+#### Configurer la tâche et enregistrer les modifications
+
+1. Avec la nouvelle tâche **StartQueryExecution** sélectionnée, dans le panneau **Inspector**, changez le nom de l'état en **Run Table Lookup**.
+2. Après avoir renommé l'état, le workflow s'affichera comme indiqué dans l'image ci-dessous.
+
+   *(Ajouter une image montrant la tâche Run Table Lookup entre Create Glue DB et End)*
+
+3. Pour les paramètres de l'API, remplacez le code JSON par défaut par le suivant. Remplacez `<FMI_1>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "show tables in nyctaxidb",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_1>/athena/"
+        }
+    }
+    ```
+
+4. Sélectionnez **Wait for task to complete - optional**.
+5. Gardez **Next state** sur **Go to end**.
+6. En haut de la page, choisissez **Save**.
+
+---
+
+#### Tester le workflow mis à jour
+
+1. Choisissez **Start execution**.
+2. Pour **Name**, entrez **TaskThreeTest**, puis choisissez **Start execution**.
+   - Observez le workflow s'exécuter, chaque tâche passant du blanc au bleu, puis au vert dans la section **Graph view**. L'image ci-dessous montre le graphe après la réussite du workflow.
+
+   *(Ajouter une image montrant le workflow avec les tâches Create Glue DB et Run Table Lookup réussies)*
+
+3. Dans la section **Events history**, remarquez que le statut de chaque tâche est fourni ainsi que la durée d'exécution de chaque tâche.
+   - Le workflow prend environ 1 minute pour s'exécuter, et il ne trouvera aucune table.
+
+---
+
+### Vérification de la sortie de la requête
+
+1. Après l'exécution du workflow, dans la section **Graph view**, choisissez la tâche **Run Table Lookup**.
+2. Dans le panneau **Details** à droite, choisissez l'onglet **Output**.
+   - Remarquez que la tâche a généré un **QueryExecutionId**. Vous utiliserez cette information dans la tâche suivante.
+
+3. Dans la console **S3**, choisissez le lien pour le bucket **gluelab**, puis choisissez le préfixe **athena**.
+   - Remarquez que le dossier (préfixe) contient désormais plus de fichiers. 
+   - **Astuce** : Vous devrez peut-être actualiser l'onglet du navigateur pour les voir.
+
+4. Les fichiers **.txt** sont vides, mais un fichier de métadonnées est présent et contient certaines données. AWS Glue utilisera ce fichier de métadonnées en interne.
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez mis à jour le workflow en ajoutant une tâche qui vérifie si des tables existent dans la base de données AWS Glue.
+
+---
+
+### Tâche 4 : Ajouter une logique de routage au workflow en fonction de l'existence des tables AWS Glue
+
+Dans cette tâche, vous allez référencer l'ID d'exécution renvoyé par la tâche **Run Table Lookup** pour vérifier les tables existantes dans la base de données AWS Glue. Vous allez également ajouter un état de choix (**choice state**) pour déterminer la route logique à suivre en fonction du résultat de la tâche précédente.
+
+---
+
+#### Mettre à jour le workflow pour obtenir les résultats de la requête
+
+1. Dans la console **Step Functions**, choisissez la machine d'état **WorkflowPOC**, puis choisissez **Edit**.
+2. Dans le panneau **Actions**, recherchez **Athena**.
+3. Faites glisser une tâche **GetQueryResults** sur le canevas entre la tâche **Run Table Lookup** et la tâche **End**.
+   - **Attention** : N'utilisez pas une tâche **GetQueryExecution**.
+
+4. Avec la tâche **GetQueryResults** sélectionnée, changez le nom de l'état en **Get lookup query results**.
+
+5. Pour les paramètres de l'API, remplacez le contenu existant par ce qui suit :
+
+    ```json
+    {
+        "QueryExecutionId.$": "$.QueryExecution.QueryExecutionId"
+    }
+    ```
+
+6. **Analyse** : Cette tâche utilisera l'ID d'exécution de la requête fourni par la tâche précédente. En passant cette valeur, la prochaine tâche (que vous n'avez pas encore ajoutée) pourra utiliser cette valeur pour évaluer si des tables ont été trouvées.
+
+7. Choisissez **{} Code**.
+8. Confirmez la définition. Elle devrait ressembler au code JSON suivant où les espaces réservés `<FMI_1>` contiennent votre vrai nom de bucket **gluelab**.
+
+    ```json
+    {
+        "Comment": "A description of my state machine",
+        "StartAt": "Create Glue DB",
+        "States": {
+            "Create Glue DB": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+                "Parameters": {
+                    "QueryString": "CREATE DATABASE if not exists nyctaxidb",
+                    "WorkGroup": "primary",
+                    "ResultConfiguration": {
+                        "OutputLocation": "s3://<FMI_1>/athena/"
+                    }
+                },
+                "Next": "Run Table Lookup"
+            },
+            "Run Table Lookup": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+                "Parameters": {
+                    "QueryString": "show tables in nyctaxidb",
+                    "WorkGroup": "primary",
+                    "ResultConfiguration": {
+                        "OutputLocation": "s3://<FMI_1>/athena/"
+                    }
+                },
+                "Next": "Get lookup query results"
+            },
+            "Get lookup query results": {
+                "Type": "Task",
+                "Resource": "arn:aws:states:::athena:getQueryResults",
+                "Parameters": {
+                    "QueryExecutionId.$": "$.QueryExecution.QueryExecutionId"
+                },
+                "End": true
+            }
+        }
+    }
+    ```
+
+9. Choisissez **Save**.
+
+---
+
+#### Ajouter un état de choix au workflow
+
+1. Choisissez **Design** en haut de la page.
+2. Dans le panneau **Actions**, choisissez l'onglet **Flow**.
+3. Faites glisser un état de **Choice** (choix) sur le canevas entre la tâche **Get lookup query results** et la tâche **End**.
+
+4. Avec l'état **Choice** sélectionné, changez le nom de l'état en **ChoiceStateFirstRun**.
+5. Dans la section **Choice Rules**, pour la règle n°1, choisissez l'icône d'édition et configurez ce qui suit :
+   - Choisissez **Add conditions**.
+   - Conservez la condition par défaut **Simple condition**.
+   - Pour **Not**, choisissez **NOT**.
+   - Pour **Variable**, entrez la valeur suivante :
+
+     ```json
+     $.ResultSet.Rows[0].Data[0].VarCharValue
+     ```
+
+   - Pour **Operator**, choisissez **is present**.
+   - Assurez-vous que vos paramètres correspondent à l'image suivante.
+
+     *(Ajouter une image montrant la configuration de la règle de choix)*
+
+6. Choisissez **Save conditions**.
+
+---
+
+#### Ajouter deux états de passage (Pass States) au workflow
+
+1. Faites glisser un état **Pass** sur le canevas après l'état **ChoiceStateFirstRun**, à gauche sous la flèche étiquetée **not**.
+   - Avec l'état **Pass** sélectionné, changez le nom de l'état en **
+
+REPLACE ME TRUE STATE**.
+
+     **Remarque** : C'est un nom temporaire que vous modifierez plus tard.
+
+2. Faites glisser un autre état **Pass** sur le canevas après l'état **ChoiceStateFirstRun**, à droite sous la flèche étiquetée **Default**.
+   - Avec l'état **Pass** sélectionné, changez le nom de l'état en **REPLACE ME FALSE STATE**.
+
+3. Votre canevas de workflow devrait maintenant ressembler à l'image suivante :
+
+   *(Ajouter une image montrant le workflow avec deux états de passage après ChoiceStateFirstRun)*
+
+4. Choisissez **Save**.
+
+---
+
+**Analyse** : Lorsque vous exécutez le workflow et que la tâche **Get lookup query results** est terminée, l'état de choix évaluera les résultats de la dernière requête. Si aucune table n'est trouvée (logique évaluée par **$.ResultSet.Rows[0].Data[0].VarCharValue**), le workflow empruntera la route **REPLACE ME TRUE STATE**. Dans la prochaine tâche, vous remplacerez cet état par un processus pour créer des tables.
+
+Sinon, si des tables sont trouvées, le workflow empruntera la route **Default** (**REPLACE ME FALSE STATE**). Plus tard dans ce laboratoire, vous remplacerez cet état par un processus pour vérifier si de nouvelles données (par exemple, les données des taxis de février) sont présentes et pour les insérer dans une table existante.
+
+---
+
+**Félicitations !** Dans cette tâche, vous avez ajouté un état de choix pour évaluer les résultats de la tâche **Get lookup query results**.
+
+
+
