@@ -36,7 +36,7 @@ Dans un environnement traditionnel, chaque mise à jour de données peut nécess
 | **Usage**                       | Données peu changeantes (historique)    | Données en constante évolution (transactions) | Données avec mise à jour fréquente et lecture rapide |
 | **Exemple d'utilisation**       | Archives de logs, données historiques   | Suivi des transactions de clients   | Données d'événements en temps réel (IoT, logs de serveur) |
 
-### 4. **Exemple simple pour les étudiants :**
+### 4. **Exemple simple :**
 Imaginez que vous avez un **journal de bord** (comme un cahier de notes) dans lequel vous enregistrez des informations de vente. 
 
 - Avec l’approche traditionnelle : Chaque fois que vous devez modifier ou ajouter une vente, vous **réécrivez tout le cahier** avec les nouvelles informations.
