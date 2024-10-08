@@ -84,9 +84,9 @@ Commençons !
    - Un nouvel onglet du navigateur s'ouvre et vous connecte à la console.
    - Astuce : Si un nouvel onglet ne s'ouvre pas, un message peut apparaître en haut de votre navigateur, indiquant que votre navigateur empêche le site d'ouvrir des fenêtres contextuelles. Choisissez la bannière ou l'icône, puis choisissez **Autoriser les fenêtres contextuelles**.
 
----
-
+------------------------------------------------------
 ### Tâche 1 : Analyser les ressources existantes et charger les données sources
+------------------------------------------------------
 
 #### Ouvrir les consoles de services AWS nécessaires
 
@@ -213,9 +213,10 @@ Comme pour le fichier de table de correspondance, la première ligne de chaque f
 
 **Félicitations !** Dans cette tâche, vous avez chargé avec succès les données sources. Vous pouvez maintenant commencer à construire le pipeline.
 
----
-
+------------------------------------------------------
 ### Tâche 2 : Automatiser la création d'une base de données AWS Glue
+------------------------------------------------------
+
 
 Dans cette tâche, vous allez créer un workflow Step Functions qui utilisera Athena pour vérifier si une base de données AWS Glue existe. Si la base de données n'existe pas, Athena la créera.
 
@@ -325,9 +326,9 @@ Important** : Assurez-vous de nommer vos tests **Start execution** exactement co
 
 **Félicitations !** Dans cette tâche, vous avez créé avec succès une base de données AWS Glue en utilisant un workflow Step Functions.
 
----
-
+------------------------------------------------------
 ### Tâche 3 : Création de la tâche pour vérifier si les tables existent dans la base de données AWS Glue
+------------------------------------------------------
 
 Dans cette tâche, vous allez mettre à jour le workflow afin qu'il vérifie si des tables existent dans la base de données AWS Glue que vous venez de créer.
 
@@ -526,8 +527,9 @@ Sinon, si des tables sont trouvées, le workflow empruntera la route **Default**
 
 
 
-
+--------------------------------------------------
 ### Tâche 5 : Création de la table AWS Glue pour les données des taxis jaunes
+--------------------------------------------------
 
 Dans cette tâche, vous allez définir la logique dans le workflow pour créer des tables AWS Glue si elles n'existent pas déjà.
 
@@ -610,9 +612,9 @@ Dans cette tâche, vous allez définir la logique dans le workflow pour créer d
 
 **Félicitations !** Dans cette tâche, vous avez créé une table AWS Glue pointant vers les données des taxis jaunes.
 
----
-
+--------------------------------------------------
 ### Tâche 6 : Création de la table AWS Glue pour les données de correspondance (lookup data)
+--------------------------------------------------
 
 Dans cette tâche, vous allez créer une autre table AWS Glue en mettant à jour et en exécutant le workflow Step Functions. La nouvelle table fera référence au fichier source **taxi_zone_lookup.csv** stocké dans Amazon S3. Une fois cette table créée, vous pourrez combiner la table de données des taxis jaunes avec la table de correspondance pour mieux comprendre les données.
 
@@ -684,9 +686,9 @@ Avant d'exécuter le workflow, vous devez d'abord supprimer la table que le work
 
 **Félicitations !** Dans cette tâche, vous avez utilisé un workflow Step Functions pour créer deux tables dans la base de données AWS Glue.
 
----
-
+--------------------------------------------------
 ### Tâche 7 : Optimisation du format des données et utilisation de la compression
+--------------------------------------------------
 
 Dans cette tâche, vous allez optimiser les tables pour qu'elles soient plus efficaces à utiliser pour les parties prenantes. Vous allez modifier le stockage des données en utilisant le format **Parquet** et la compression **Snappy**. Ces optimisations permettront aux utilisateurs de travailler avec les données plus rapidement et à moindre coût.
 
@@ -755,4 +757,399 @@ CREATE table if not exists nyctaxidb.nyctaxi_lookup_parquet WITH (format='PARQUE
 **Félicitations !** Dans cette tâche, vous avez créé la table de correspondance au format Parquet avec compression Snappy. Vous allez maintenant créer une autre table Parquet et pourrez ensuite combiner les informations des deux tables.
 
 
+
+
+
+
+
+
+--------------------------------------------------
+### Tâche 8 : Optimisation avec des partitions
+--------------------------------------------------
+
+Dans cette tâche, vous allez créer une table **yellowtaxi_data_parquet** au format Parquet avec compression Snappy, similaire à ce que vous avez fait avec la table de correspondance. Cependant, vous apporterez un autre changement : comme les données de la table des taxis jaunes sont spécifiques au temps, il est logique de partitionner les données. Vous allez créer un préfixe dans Amazon S3 nommé **optimized-data** pour que vous puissiez partitionner les données par année et mois de prise en charge (pickup year et pickup month).
+
+Grâce aux partitions, vous pourrez restreindre la quantité de données scannée par chaque requête, ce qui améliorera les performances et réduira les coûts. Le partitionnement divise une table en parties et garde les données associées ensemble en fonction des valeurs de colonnes.
+
+En utilisant des partitions, les nouvelles données ajoutées seront compartimentées, et les requêtes incluant une date de prise en charge seront beaucoup plus efficaces. Avec le format Parquet et la compression Snappy en place, le stockage des données sera pleinement optimisé.
+
+---
+
+#### Mettre à jour le workflow avec une nouvelle étape qui crée la table **yellowtaxi_data_parquet**
+
+1. Dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour ouvrir la machine d'état **WorkflowPOC** dans **Workflow Studio**.
+2. Dans le panneau **Actions**, recherchez **athena**.
+3. Faites glisser une tâche **StartQueryExecution** entre la tâche **Run Create Parquet lookup Table Query** et l'état **End**.
+4. Avec la tâche **StartQueryExecution** sélectionnée, changez le nom de l'état en **Run Create Parquet data Table Query**.
+5. Pour les paramètres de l'API, remplacez le code JSON par défaut par le suivant. Remplacez `<FMI_1>` et `<FMI_2>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "CREATE table if not exists nyctaxidb.yellowtaxi_data_parquet WITH (format='PARQUET',parquet_compression='SNAPPY',partitioned_by=array['pickup_year','pickup_month'],external_location = 's3://<FMI_1>/nyctaxidata/optimized-data/') AS SELECT vendorid,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,ratecodeid,store_and_fwd_flag,pulocationid,dolocationid,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge,payment_type,substr(\"tpep_pickup_datetime\",1,4) pickup_year, substr(\"tpep_pickup_datetime\",6,2) AS pickup_month FROM nyctaxidb.yellowtaxi_data_csv where substr(\"tpep_pickup_datetime\",1,4) = '2020' and substr(\"tpep_pickup_datetime\",6,2) = '01'",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_2>/athena/"
+        }
+    }
+    ```
+
+6. Sélectionnez **Wait for task to complete - optional**.
+7. Choisissez **Save**.
+
+---
+
+#### Tester en supprimant les tables existantes dans AWS Glue, en exécutant le workflow, et en vérifiant les résultats
+
+1. Dans la console **AWS Glue**, supprimez les trois tables existantes.
+    - Cela garantira que le workflow emprunte le bon chemin lors de son exécution.
+
+2. Dans la console **S3**, accédez au contenu du dossier **athena** dans votre bucket **gluelab**.
+    - Choisissez le préfixe **nyctaxidata**.
+    - Supprimez le préfixe **optimized-data-lookup** en choisissant **Delete**.
+    - Sur la page **Delete objects**, saisissez **permanently delete** dans le champ en bas de la page, puis choisissez **Delete objects**.
+    - Choisissez **Close**.
+
+    **Explication** : Comme mentionné précédemment, les permissions accordées à Athena ne lui permettent pas de supprimer les informations de table stockées dans Amazon S3. Vous devez donc supprimer manuellement le préfixe **optimized-data-lookup** avant de lancer le workflow.
+
+3. Dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour exécuter la machine d'état **WorkflowPOC**. Nommez le test **TaskEightTest**.
+
+    - L'image ci-dessous montre le workflow une fois terminé.
+
+    *(Ajouter une image montrant le workflow avec les deux tâches de requêtes Parquet complétées)*
+
+4. Vérifiez que la nouvelle table a été créée.
+
+    - Dans la console **Athena**, dans le panneau de navigation, choisissez **Query editor**.
+    - **Astuce** : Si le panneau de navigation est réduit, ouvrez-le en choisissant l'icône de menu (☰).
+    - **Remarque** : Comme c'est la première fois que vous utilisez Athena, un message en haut de la page vous indique que vous devez configurer un emplacement de résultats de requête dans Amazon S3.
+    - Choisissez l'onglet **Settings**.
+    - Choisissez **Manage** et configurez ce qui suit :
+        - Choisissez **Browse S3**.
+        - Choisissez le lien vers votre bucket **gluelab**.
+        - Choisissez l'option pour le préfixe **athena**.
+        - Sélectionnez **Choose**.
+        - Choisissez **Save**.
+
+    - Choisissez l'onglet **Editor**.
+    - Dans le panneau **Data**, pour **Database**, choisissez **nyctaxidb**.
+    - Développez la table **yellowtaxi_data_parquet**.
+
+    L'image ci-dessous montre la vue développée.
+
+    *(Ajouter une image montrant la vue développée de la table yellowtaxi_data_parquet)*
+
+    - Remarquez l'étiquette **Partitioned** pour la table.
+    - **Astuce** : Vous devrez peut-être faire défiler vers le bas pour voir les deux dernières colonnes de la base de données, qui stockeront les données sous forme de chaînes partitionnées.
+
+---
+
+**Excellent travail !** Dans cette tâche, vous avez recréé les deux tables AWS Glue au format Parquet avec compression Snappy. De plus, vous avez configuré la table **yellowtaxi_data_parquet** pour qu'elle soit partitionnée, et vous avez confirmé que vous pouvez charger la table dans l'éditeur de requêtes Athena.
+
+--------------------------------------------------
+
+### Tâche 9 : Création d'une vue dans Athena
+--------------------------------------------------
+
+Dans cette tâche, vous allez créer une vue des données dans l'éditeur de requêtes Athena. La vue combinera les données des deux tables qui sont stockées au format Parquet.
+
+---
+
+#### Créer une nouvelle vue des données en utilisant l'éditeur de requêtes Athena
+
+1. Dans le panneau **Data**, dans la section **Tables and views**, choisissez **Create** > **CREATE VIEW**.
+    - Les commandes SQL suivantes apparaissent dans un onglet de requête pour vous aider à démarrer.
+
+    ```sql
+    -- View Example
+    CREATE OR REPLACE VIEW view_name AS
+    SELECT column1, column2
+    FROM table_name
+    WHERE condition;
+    ```
+
+2. Remplacez les commandes par défaut par le code suivant :
+
+    ```sql
+    create or replace view nyctaxidb.yellowtaxi_data_vw as select a.*,lkup.* from (select  datatab.pulocationid pickup_location ,pickup_month, pickup_year, sum(cast(datatab.total_amount AS decimal(10, 2))) AS sum_fare , sum(cast(datatab.trip_distance AS decimal(10, 2))) AS sum_trip_distance , count(*) AS countrec   FROM nyctaxidb.yellowtaxi_data_parquet datatab WHERE datatab.pulocationid is NOT null  GROUP BY  datatab.pulocationid, pickup_month, pickup_year) a , nyctaxidb.nyctaxi_lookup_parquet lkup where lkup.locationid = a.pickup_location;
+    ```
+
+    **Remarque** : Dans ce scénario, Mary vous a fourni ces commandes SQL.
+
+3. Choisissez **Run**.
+    - La requête se termine avec succès. Dans le panneau **Data**, dans la section **Views**, une vue **yellowtaxi_data_vw** est maintenant listée.
+
+4. Développez les détails de la nouvelle vue.
+    - L'image ci-dessous montre la vue développée.
+
+    *(Ajouter une image montrant la vue développée de la vue yellowtaxi_data_vw)*
+
+5. Remarquez comment la vue contient des colonnes telles que **sum_fare** et **sum_trip_distance**.
+    - À droite du nom de la vue, choisissez l'icône **three-dot** (…), puis choisissez **Preview View**.
+    - Les résultats s'affichent et sont similaires à l'image suivante.
+
+    *(Ajouter une image montrant un aperçu des résultats de la vue)*
+
+---
+
+**Vous avez fait un excellent progrès !** Dans cette tâche, vous avez créé avec succès une vue des données obtenues en interrogeant les deux tables Parquet.
+
+
+
+
+
+
+--------------------------------------------------
+### Tâche 10 : Ajouter la vue au workflow Step Functions
+--------------------------------------------------
+
+Vous avez appris à créer la vue manuellement en utilisant l'éditeur de requêtes Athena. L'étape suivante consiste à ajouter une tâche au workflow pour que le pipeline ETL crée la vue lorsque celle-ci n'existe pas encore. Vous ajouterez cette nouvelle tâche après la création des tables afin que la vue ne soit pas recréée à chaque fois que de nouvelles données sont ajoutées.
+
+---
+
+#### Supprimer la vue que vous avez créée manuellement
+
+1. Dans la console **S3**, accédez au contenu du dossier **nyctaxidata** dans votre bucket **gluelab**.
+2. Supprimez les deux préfixes contenant **optimized** dans leurs noms.
+3. Dans la console **AWS Glue**, supprimez toutes les cinq tables.
+
+---
+
+#### Ajouter une étape au workflow Step Functions pour créer la vue
+
+1. Dans la console **Step Functions**, utilisez la méthode que vous avez utilisée dans les étapes précédentes pour ouvrir la machine d'état **WorkflowPOC** dans **Workflow Studio**.
+2. Dans le panneau **Actions**, recherchez **athena**.
+3. Faites glisser une tâche **StartQueryExecution** entre la tâche **Run Create Parquet data Table Query** et l'état **End**.
+4. Avec la tâche **StartQueryExecution** sélectionnée, changez le nom de l'état en **Run Create View**.
+5. Pour les paramètres de l'API, remplacez le code JSON par le suivant. Remplacez `<FMI_1>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "create or replace view nyctaxidb.yellowtaxi_data_vw as select a.*,lkup.* from (select  datatab.pulocationid pickup_location ,pickup_month, pickup_year, sum(cast(datatab.total_amount AS decimal(10, 2))) AS sum_fare , sum(cast(datatab.trip_distance AS decimal(10, 2))) AS sum_trip_distance , count(*) AS countrec   FROM nyctaxidb.yellowtaxi_data_parquet datatab WHERE datatab.pulocationid is NOT null  GROUP BY  datatab.pulocationid, pickup_month, pickup_year) a , nyctaxidb.nyctaxi_lookup_parquet lkup where lkup.locationid = a.pickup_location",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_1>/athena/"
+        }
+    }
+    ```
+
+6. Remarquez que la chaîne **QueryString** contient la même requête que vous avez exécutée pour créer la vue dans l'éditeur de requêtes Athena lors de la tâche précédente.
+7. Sélectionnez **Wait for task to complete - optional**.
+8. Choisissez **Save**.
+
+---
+
+#### Tester le workflow
+
+1. Utilisez la méthode que vous avez utilisée dans les étapes précédentes pour exécuter la machine d'état **WorkflowPOC**. Nommez le test **TaskTenTest**.
+
+    - L'image ci-dessous montre le workflow une fois terminé.
+
+    *(Ajouter une image montrant le workflow avec la tâche Run Create View complétée)*
+
+---
+
+**Excellent travail !** Vous avez maintenant un pipeline ETL complet sous forme de preuve de concept (POC). Ce POC est conçu pour être facile à utiliser pour un nouveau projet. Pour utiliser le workflow, quelqu'un n'aurait qu'à remplacer les emplacements des buckets et mettre à jour les requêtes pour le format des données et la façon dont ils souhaitent partitionner et traiter les données.
+
+Le seul problème restant est que cette implémentation ne prend pas encore en charge l'ajout de nouvelles données temporelles (par exemple, les données de février). C'est ce que vous allez traiter dans la prochaine étape.
+
+--------------------------------------------------
+### Tâche 11 : Ajouter un nouveau workflow pour l'injection de données
+--------------------------------------------------
+
+Dans cette tâche, vous allez ajouter les données de février au workflow.
+
+La commande suivante, que Mary vous a fournie, va insérer les données de février (02).
+
+```sql
+INSERT INTO nyctaxidb.yellowtaxi_data_parquet select vendorid,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,ratecodeid,store_and_fwd_flag,pulocationid,dolocationid,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge,payment_type,substr(\"tpep_pickup_datetime\",1,4) pickup_year, substr(\"tpep_pickup_datetime\",6,2) AS pickup_month FROM nyctaxidb.yellowtaxi_data_csv where substr(\"tpep_pickup_datetime\",1,4) = '2020' and substr(\"tpep_pickup_datetime\",6,2) = '02'"
+```
+
+Vous pourriez exécuter cette commande pour chaque fichier, mais cela créerait deux fichiers CSV et deux fichiers Parquet. Vous souhaitez ajouter des données uniquement à la table Parquet des données des taxis jaunes.
+
+Vous décidez qu'une approche efficace consiste à utiliser une étape **Map** dans Step Functions, car ce type d'étape peut itérer sur toutes les tables AWS Glue et passer les tables que vous ne souhaitez pas mettre à jour. De cette manière, vous pouvez exécuter la commande uniquement sur le fichier Parquet des données des taxis jaunes.
+
+---
+
+#### Ajouter un état **Map** au workflow
+
+1. Utilisez la méthode que vous avez utilisée dans les étapes précédentes pour ouvrir la machine d'état **WorkflowPOC** dans **Workflow Studio**.
+2. Dans le panneau **Flow**, faites glisser un état **Map** sur le canevas entre la tâche **REPLACE ME FALSE STATE** et l'état **End**.
+3. Supprimez la tâche **REPLACE ME FALSE STATE** du workflow.
+4. Avec l'état **Map** sélectionné, changez le nom de l'état en **Check All Tables**.
+5. Pour **Path to items array**, entrez **$.Rows**.
+6. Choisissez l'onglet **Input**.
+7. Sélectionnez **Filter input with InputPath**, et pour **InputPath**, entrez **$.ResultSet**.
+
+    **Analyse** : Le chemin d'entrée définit les données qui seront analysées lors de chaque itération.
+
+8. Assurez-vous que **Transform array item with Parameters** n'est pas sélectionné.
+9. Choisissez l'onglet **Configuration**.
+10. Pour **Next state**, laissez **Go to end** sélectionné.
+
+---
+
+#### Ajouter un état de choix au workflow
+
+1. Dans le panneau **Flow**, faites glisser un état **Choice** sur le canevas là où apparaît **Drop state here** après l'état **Check All Tables**.
+2. Avec l'état **Choice** sélectionné, changez le nom de l'état en **CheckTable**.
+3. Dans la section **Choice Rules**, pour la règle n°1, choisissez l'icône d'édition et configurez ce qui suit :
+    - Choisissez **Add conditions**.
+    - Conservez la condition simple par défaut.
+    - Gardez **Not blank** sans sélectionner d'option.
+    - Pour **Variable**, entrez **$.Data[0].VarCharValue**.
+    - Pour **Operator**, choisissez **matches string**.
+    - Pour **Value**, entrez **data_parquet**.
+
+    **Analyse** : Chaque itération des noms de tables AWS Glue vérifiera si le nom correspond au modèle se terminant par **data_parquet**. Cela ne correspondra qu'à une table, ce qui est la logique souhaitée.
+
+4. Choisissez **Save conditions**.
+
+---
+
+#### Ajouter un état **Pass** au workflow et configurer la logique par défaut de choix
+
+1. Dans le panneau **Flow**, faites glisser un état **Pass** sur le canevas après l'état **CheckTable**, sur le côté droit sous la flèche étiquetée **Default**.
+2. Avec l'état **Pass** sélectionné, changez le nom de l'état en **Ignore File**.
+3. Sur le canevas, choisissez l'étiquette **Default** sur la flèche sous l'état **CheckTable**.
+4. Dans le panneau **Inspector**, dans la section **Choice Rules**, ouvrez les détails de la règle par défaut.
+5. Pour **Default state**, vérifiez que **Ignore File** est sélectionné.
+
+    **Analyse** : La règle par défaut sera invoquée pour toute table AWS Glue qui n'est pas celle que vous souhaitez modifier (soit toutes les tables sauf **yellowtaxi_data_parquet**).
+
+---
+
+#### Ajouter une tâche **StartQueryExecution** au workflow pour mettre à jour la table Parquet des taxis
+
+1. Dans le panneau **Actions**, recherchez **athena**.
+2. Faites glisser une tâche **StartQueryExecution** sur le canevas après l'état **CheckTable**, sur le côté gauche.
+3. Avec la tâche **StartQueryExecution** sélectionnée, changez le nom de l'état en **Insert New Parquet Data**.
+4. Pour les paramètres de l'API, remplacez le code JSON par le suivant. Remplacez `<FMI_1>` par le nom réel de votre bucket.
+
+    ```json
+    {
+        "QueryString": "INSERT INTO nyctaxidb.yellowtaxi_data_parquet select vendorid,tpep_pickup_datetime,tpep_dropoff_datetime,passenger_count,trip_distance,ratecodeid,store_and_fwd_flag,pulocationid,dolocationid,fare_amount,extra,mta_tax,tip_amount,tolls_amount,improvement_surcharge,total_amount,congestion_surcharge,payment_type,substr
+
+(\"tpep_pickup_datetime\",1,4) pickup_year, substr(\"tpep_pickup_datetime\",6,2) AS pickup_month FROM nyctaxidb.yellowtaxi_data_csv where substr(\"tpep_pickup_datetime\",1,4) = '2020' and substr(\"tpep_pickup_datetime\",6,2) = '02'",
+        "WorkGroup": "primary",
+        "ResultConfiguration": {
+            "OutputLocation": "s3://<FMI_1>/athena/"
+        }
+    }
+    ```
+
+5. Sélectionnez **Wait for task to complete - optional**.
+6. Pour **Next state**, laissez **Go to end** sélectionné.
+7. Confirmez que la nouvelle logique ajoutée au workflow ressemble à l'image suivante :
+
+   *(Ajouter une image montrant le workflow avec les états Insert New Parquet Data et Ignore File)*
+
+8. Choisissez **Save**.
+
+---
+
+**Excellent travail !** Vous avez ajouté avec succès la logique finale au workflow. Cette logique va traiter le mois supplémentaire de données de taxis.
+
+---
+
+
+
+
+
+
+--------------------------------------------------
+### Tâche 12 : Tester la solution complète
+--------------------------------------------------
+
+Dans cette dernière tâche, vous allez tester la solution complète du POC (Proof of Concept).
+
+---
+
+#### Tester les résultats du dernier workflow dans la console Step Functions
+
+1. Utilisez la méthode que vous avez utilisée dans les étapes précédentes pour exécuter la machine d'état **WorkflowPOC**. Nommez le test **TaskTwelveTest**.
+
+    - L'image ci-dessous montre le workflow une fois terminé.
+
+    *(Ajouter une image montrant le workflow complété pour le POC)*
+
+    **Astuce** : Dans la section **Graph inspector**, pour agrandir le graphe, faites glisser la barre avec les trois points horizontaux vers le bas de la page.
+
+---
+
+#### Vérifier que l'itérateur fonctionne comme prévu
+
+1. Dans la section **Graph inspector**, choisissez l'étape **CheckTable**.
+2. En haut de la section, deux menus déroulants apparaissent pour **Iteration status** et **Index**. Par défaut, la première itération avec une valeur d'index de 0 est sélectionnée.
+3. Dans le panneau **Details** à droite, vérifiez que la première itération a réussi.
+4. Changez l'index à 1 et vérifiez que l'itération a réussi.
+5. Répétez ces étapes pour les itérations 2, 3 et 4. Elles devraient toutes avoir réussi.
+6. Remettez l'index à 0.
+7. Choisissez l'onglet **Step input**, et vérifiez que le code JSON ressemble à l'image suivante. **VarCharValue** doit être défini sur **nyctaxi_lookup_csv**.
+
+   *(Ajouter une image de l'onglet Step input dans la section Graph inspector)*
+
+8. Tout en restant sur l'onglet **Step input**, changez l'index jusqu'à ce que **VarCharValue** dans le code JSON soit égal à **yellowtaxi_data_parquet**.
+9. Dans le graphe, choisissez l'étape **Insert New Parquet Data**.
+10. Choisissez l'onglet **Step output**.
+    - Ici, vous verrez la requête qui a créé la vue, en plus d'autres détails d'exécution des étapes.
+
+---
+
+#### Tester dans la console Athena
+
+1. Dans la console **Athena**, ouvrez l'éditeur de requêtes et assurez-vous que **nyctaxidb** est sélectionné pour **Database**.
+2. Dans la section **Views**, choisissez l'icône à trois points (… ) pour la vue listée, puis choisissez **Preview View**.
+    - Les 10 premiers enregistrements des résultats s'affichent. Remarquez que la vue scanne désormais des données incluant le mois 02 (février).
+
+3. Pour vérifier que les données de février sont également dans l'ensemble de données, exécutez la requête suivante dans l'éditeur de requêtes :
+
+    ```sql
+    SELECT * FROM "nyctaxidb"."yellowtaxi_data_vw" WHERE pickup_month = '02'
+    ```
+
+    - Les 100 premiers résultats s'affichent comme montré dans l'image suivante.
+
+    *(Ajouter une image montrant les résultats de la requête incluant les données de février)*
+
+---
+
+**Félicitations !** Le pipeline ETL peut désormais traiter les nouvelles données et les intégrer à la vue afin que ces données puissent être interrogées dans Athena.
+
+---
+
+### Mise à jour de l'équipe
+
+Après avoir construit la preuve de concept complète, vous avez présenté rapidement une démonstration à Mary. Elle a été très impressionnée !
+
+Mary a indiqué qu'elle est confiante qu'elle pourra dupliquer ce POC et ajuster les valeurs en dur selon les besoins pour chaque projet. Elle est impatiente de commencer à utiliser le pipeline ETL que vous avez créé pour accélérer le traitement de ses données sur ses nombreux projets.
+
+---
+
+### Soumettre votre travail
+
+1. Pour enregistrer vos progrès, choisissez **Submit** en haut de ces instructions.
+2. Lorsque vous y êtes invité, choisissez **Yes**.
+    - Après quelques minutes, le panneau des notes apparaît et vous montre combien de points vous avez obtenus pour chaque tâche. Si les résultats ne s'affichent pas après quelques minutes, choisissez **Grades** en haut de ces instructions.
+
+    **Astuce** : Vous pouvez soumettre votre travail plusieurs fois. Après avoir modifié votre travail, choisissez **Submit** à nouveau. Votre dernière soumission est enregistrée pour ce laboratoire.
+
+3. Pour obtenir un retour détaillé sur votre travail, choisissez **Submission Report**.
+
+---
+
+**Lab terminé**
+
+Félicitations ! Vous avez terminé ce laboratoire.
+
+1. En haut de cette page, choisissez **End Lab**, puis choisissez **Yes** pour confirmer que vous souhaitez terminer le laboratoire.
+2. Un panneau de message indique que le laboratoire se termine.
+3. Pour fermer le panneau, choisissez **Close** dans le coin supérieur droit.
+
+---
+
+© 2022, Amazon Web Services, Inc. et ses filiales. Tous droits réservés.
+
+---
+
+**Félicitations à vous aussi !** Vous avez mené à bien l'intégralité de ce laboratoire détaillé en construisant et orchestrant des pipelines ETL avec Step Functions, Athena, S3, et AWS Glue.
 
