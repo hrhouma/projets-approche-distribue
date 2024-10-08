@@ -34,6 +34,7 @@ Vous utiliserez un job AWS Glue avec des scripts personnalisés pour gérer ce s
 Lors du démarrage du lab, l'environnement contiendra les ressources indiquées dans le diagramme suivant :
 
 *(le diagramme)*
+
 ![image](https://github.com/user-attachments/assets/81d4eec3-c5b8-46af-8e21-8abf3a762fc8)
 
 *(digramme final)*
