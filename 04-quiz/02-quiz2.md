@@ -96,9 +96,7 @@ Une équipe d'ingénierie des données dans une grande entreprise de commerce é
 
 **Laquelle des méthodes suivantes serait la PLUS efficace pour optimiser les performances des requêtes pour leurs besoins spécifiques ?**
 
-1. Mettre à jour fréquemment l'indexation des données
-
- dans Amazon S3 afin d'améliorer la vitesse de récupération des données pour les requêtes Amazon Athena.
+1. Mettre à jour fréquemment l'indexation des données dans Amazon S3 afin d'améliorer la vitesse de récupération des données pour les requêtes Amazon Athena.
 2. Utiliser une requête fédérée dans Amazon Athena pour interroger simultanément des données provenant de plusieurs sources disparates.
 3. Activer la fonctionnalité de réutilisation des résultats de requêtes d'Amazon Athena pour les requêtes fréquemment exécutées.
 4. Exécuter une requête **CREATE TABLE AS SELECT (CTAS)** dans Amazon Athena pour convertir les résultats de requêtes dans des formats de stockage efficaces comme Parquet ou ORC.
