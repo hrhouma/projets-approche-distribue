@@ -948,9 +948,7 @@ D. AWS Glue
 
 Vous devez effectuer des opérations de **machine learning** sur des **données en streaming** pour détecter des anomalies en temps réel.
 
-**Quel service
-
- utilisez-vous ?**
+**Quel service utilisez-vous ?**
 
 A. Kinesis Data Analytics  
 B. AWS Glue  
