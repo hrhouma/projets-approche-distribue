@@ -55,7 +55,7 @@ RETURN a, r, b;
 
 ### Détails du script :
 1. **Création des cours** : Tous les cours sont créés avec le programme "Intelligence Artificielle" et des sigles spécifiques commençant par "420-AI".
-2. **Création des professeurs** : Les noms sont anglophones (John, Emily, Michael, Sarah) et incluent également "Haythem Rehouma" pour maintenir un lien avec votre nom d'origine.
+2. **Création des professeurs** : Les noms des professeurs (John, Emily, Michael, Sarah) et "Haythem Rehouma".
 3. **Relations `ENSEIGNER`** : Chaque professeur est assigné à enseigner un cours, avec un nombre d'heures spécifié pour certains cours.
 4. **Relations `PREALABLE`** : Des relations de prérequis entre différents cours sont créées, structurant ainsi une progression académique.
 5. **Relations `COLLEGUES`** : Les professeurs collaborent entre eux sur le programme "Intelligence Artificielle".
