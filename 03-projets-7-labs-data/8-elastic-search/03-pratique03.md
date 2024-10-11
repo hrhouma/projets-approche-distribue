@@ -10,7 +10,7 @@ CREATE (:cours {sigle: '420-AI01-RO', diplome: 'AEC/DEC/MAITRISE/BAC/DOCTORAT'})
        (:cours {sigle: '420-AI05-RO'}),
        (:cours {sigle: '420-AI06-RO'});
 
-// Création des professeurs anglophones et relations d'enseignement
+// Création des professeurs et relations d'enseignement
 CREATE (:professeur {matricule: 101, prenom: 'John', nom: 'Smith'})-[:ENSEIGNER]->(:cours {sigle: '420-AI01-RO'}),
        (:professeur {matricule: 102, prenom: 'Emily', nom: 'Johnson'})-[:ENSEIGNER {nbrhrs: 45}]->(:cours {sigle: '420-AI02-RO'}),
        (:professeur {matricule: 103, prenom: 'Michael', nom: 'Williams'})-[:ENSEIGNER]->(:cours {sigle: '420-AI03-RO'}),
