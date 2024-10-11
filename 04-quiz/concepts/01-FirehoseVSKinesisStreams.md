@@ -80,3 +80,43 @@ Je vous présente un tableau plus détaillé, avec des **études de cas** et des
    - **Kinesis Firehose** serait utilisé pour collecter des données de capteurs IoT (trafic, température, consommation d'énergie) et les envoyer à un data lake (S3) pour des analyses mensuelles ou annuelles.
    - **Kinesis Streams** pourrait analyser les données en temps réel pour prendre des décisions immédi
 
+
+
+
+
+
+
+----------------------
+# Tableau 4
+----------------------
+
+
+
+Je vous présente une comparaison plus détaillée qui met en lumière **quand utiliser** l’un et **quand ne pas utiliser** l’autre, en se concentrant sur le besoin d'intégrer d'autres services ou sur une gestion entièrement automatique :
+
+
+| **Cas / Scénario**                                           | **Kinesis Firehose** : Quand l'utiliser et ne pas utiliser l'autre         | **Kinesis Streams (Firestream)** : Quand l'utiliser et ne pas utiliser l'autre |
+|--------------------------------------------------------------|----------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| **Gestion entièrement gérée (pas besoin d'intégration supplémentaire)** | **Quand l'utiliser** : Si tu cherches une solution **entièrement gérée** sans avoir besoin de te soucier de la gestion de l'infrastructure, du débit ou des shards. Firehose ajuste automatiquement la capacité, compresse, chiffre et transforme les données sans intervention.<br>- **Exemple** : Collecte de logs, ingestion de données de capteurs IoT avec envoi direct dans S3 ou Redshift, sans besoin d'intégration complexe.<br>**Ne pas utiliser Streams** : Si tu ne veux pas gérer manuellement le nombre de shards ou l'échelle. Streams nécessite une gestion manuelle des ressources. | **Quand ne pas l'utiliser** : Si tu veux un service simple, entièrement géré, sans avoir à configurer manuellement la capacité ou gérer l'infrastructure. Kinesis Streams est plus complexe à gérer car tu dois contrôler le nombre de shards.<br>- **Exemple** : Firehose est préférable pour des cas simples où les données doivent être stockées ou archivées dans S3 sans besoin de transformation complexe en temps réel. |
+| **Besoin d'intégrer plusieurs services ou architectures complexes** | **Quand ne pas l'utiliser** : Si tu as besoin de traiter des flux de données complexes avec plusieurs intégrations (ex. : plusieurs bases de données, services analytiques, ou des applications en temps réel). Firehose est conçu pour des pipelines plus simples où les données sont envoyées directement vers une destination. | **Quand l'utiliser** : Si tu dois **intégrer plusieurs services** en parallèle. Streams te permet de **multiplier les consommateurs**, et chaque consommateur peut être une application différente ou un service (par ex. : Lambda, Amazon EMR, etc.). Kinesis Streams permet de lire les mêmes données à partir de plusieurs applications en parallèle.<br>- **Exemple** : Applications temps réel, enrichissement de données via plusieurs sources, ou gestion de flux complexes qui nécessitent plusieurs niveaux de traitement. |
+| **Prétraitement simple avant stockage dans un service comme S3 ou Redshift** | **Quand l'utiliser** : Firehose est idéal pour des **prétraitements simples** (ex. : formatage de logs, compression, transformation en JSON) avant d’envoyer les données à une destination comme S3 ou Redshift.<br>- **Exemple** : Collecte de logs d'application ou transformation des données CSV en JSON avec Lambda avant de les stocker.<br>**Ne pas utiliser Streams** : Si le flux de données ne nécessite pas d’analyses complexes ou de multi-consommateurs, il n’est pas nécessaire de passer par Streams. | **Quand ne pas l'utiliser** : Si tu as juste besoin de prétraiter les données (par ex. via Lambda), puis les envoyer dans un data lake (S3) ou entrepôt de données (Redshift). Streams peut être excessif pour des prétraitements simples, car tu devras gérer manuellement les shards et partitions. |
+| **Faible latence requise pour des décisions en temps réel** | **Quand ne pas l'utiliser** : Si tu as besoin d’une latence ultra-faible pour prendre des décisions en temps réel (ex. : surveillance en temps réel, trading, ou systèmes de recommandation). Firehose n’est pas optimisé pour des délais de réaction immédiats. | **Quand l'utiliser** : Kinesis Streams est conçu pour des cas d'utilisation à **faible latence**, où des actions immédiates sont nécessaires en fonction des données qui arrivent.<br>- **Exemple** : Analyse de transactions financières pour détecter des fraudes en temps réel, ou surveillance d’objets via des capteurs IoT qui nécessitent des réactions immédiates. |
+| **Archiver ou stocker les données pour une analyse ultérieure** | **Quand l'utiliser** : Si tu veux simplement **stocker ou archiver** des données à long terme, Firehose est idéal car il gère automatiquement l'envoi des données vers des destinations comme S3, Redshift ou Elasticsearch, sans besoin de les rejouer plus tard.<br>- **Exemple** : Archivage de logs ou de données brutes pour des audits futurs. | **Quand ne pas l'utiliser** : Si tu n’as pas besoin de relire ou de rejouer des données stockées. Kinesis Streams permet de relire les données dans une fenêtre de 24 heures à 7 jours, ce qui est utile si tu dois revenir en arrière, mais c’est inutile pour un stockage long terme simple. |
+| **Relecture de données en streaming pour analyse ou simulation** | **Quand ne pas l'utiliser** : Si tu ne prévois pas de rejouer des flux de données pour des analyses ou simulations. Firehose envoie les données vers une destination, mais une fois envoyées, tu ne peux pas revenir en arrière pour les relire. | **Quand l'utiliser** : Streams est parfait pour des cas où tu dois **relire ou rejouer les données**. Par exemple, pour tester des nouveaux algorithmes ou pour une analyse après coup. Tu peux rejouer les données pendant une période allant jusqu'à 7 jours.<br>- **Exemple** : Test de nouveaux modèles d’apprentissage ou analyse des transactions passées pour identifier des patterns. |
+| **Cas nécessitant de multiples consommateurs**             | **Quand ne pas l'utiliser** : Si tu dois traiter un flux de données pour plusieurs consommateurs (par ex. : un pipeline d'analytics, un entrepôt de données, une autre application). Firehose n'est pas optimisé pour cela, il est conçu pour envoyer des données à **une seule destination**. | **Quand l'utiliser** : Streams permet **plusieurs consommateurs** en parallèle, chaque application ou service peut lire les mêmes données à des moments différents.<br>- **Exemple** : Une application en temps réel pour la détection de fraudes peut lire les données en temps réel, tandis qu'une autre application peut lire les mêmes données pour une analyse plus tardive. |
+
+### Résumé :
+
+- **Utilise Kinesis Firehose** quand :
+  - Tu veux un service entièrement géré, sans avoir à gérer manuellement l'échelle ou l'infrastructure.
+  - Tu as besoin de **prétraitements simples** (ex. : transformation, compression) avant d'envoyer les données à une destination comme S3, Redshift, Elasticsearch.
+  - Tu n'as **pas besoin de relecture** des données une fois envoyées.
+  - Le cas d'utilisation consiste à **archiver ou stocker** des données pour une analyse future sans gestion complexe.
+
+- **Utilise Kinesis Streams (Firestream)** quand :
+  - Tu dois **intégrer plusieurs services** ou permettre à plusieurs applications de lire les mêmes données.
+  - Tu as besoin de **contrôle granulaire** sur la gestion des flux, avec plusieurs **consommateurs en parallèle**.
+  - Tu as besoin de **faible latence** pour des **réactions en temps réel**.
+  - Tu veux **relire** les flux de données pendant une période (jusqu'à 7 jours) pour rejouer des événements ou tester des modèles.
+
+En fonction de nos besoins en termes d'intégration avec d'autres services et de gestion automatique, tu pourras choisir l'une ou l'autre de ces solutions.
