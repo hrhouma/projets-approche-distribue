@@ -120,3 +120,50 @@ Je vous présente une comparaison plus détaillée qui met en lumière **quand u
   - Tu veux **relire** les flux de données pendant une période (jusqu'à 7 jours) pour rejouer des événements ou tester des modèles.
 
 En fonction de nos besoins en termes d'intégration avec d'autres services et de gestion automatique, tu pourras choisir l'une ou l'autre de ces solutions.
+
+
+# Annexe 1 - C'est quoi un shard ?
+
+
+Un **shard** (ou fragment) dans le contexte d'**Amazon Kinesis Streams** est une unité de capacité qui te permet de partitionner les données de streaming en plusieurs sous-flux. C'est un concept clé dans la gestion des flux de données en temps réel. Voici une explication détaillée :
+
+### Qu'est-ce qu'un shard ?
+
+Un **shard** est une unité de capacité de calcul dans Kinesis Streams, et il détermine :
+- **La capacité d'ingestion** : Un shard peut ingérer des données jusqu'à **1 Mo par seconde** ou environ **1000 enregistrements par seconde**.
+- **La capacité de lecture** : Chaque shard peut délivrer jusqu'à **2 Mo par seconde** aux consommateurs qui lisent les données.
+
+### Comment fonctionnent les shards ?
+
+Lorsqu'un flux de données (stream) est créé dans Kinesis, il est divisé en un ou plusieurs **shards**. Chaque shard reçoit une partie du flux total de données. Lorsque tu publies des données dans le flux, elles sont affectées à un shard particulier en fonction de la **clé de partition** (partition key) que tu définis lors de l'envoi des données.
+
+Chaque shard fonctionne indépendamment des autres, ce qui te permet de **distribuer la charge** du flux de données sur plusieurs shards pour éviter un engorgement.
+
+### Pourquoi utiliser des shards ?
+
+1. **Scalabilité** : Tu peux augmenter ou réduire le nombre de shards dans un flux en fonction de la charge de données. Si tu prévois de recevoir un volume élevé de données, tu peux ajouter plus de shards pour mieux répartir la charge.
+   
+2. **Traitement en parallèle** : Chaque shard peut être consommé indépendamment par une application ou un service, ce qui permet de traiter les données en parallèle et d'augmenter la capacité de traitement du flux.
+
+3. **Contrôle du débit** : Chaque shard a des limites de débit d'écriture (ingestion) et de lecture. Si tu as besoin de traiter de plus grandes quantités de données, tu peux ajouter des shards pour augmenter le débit global du flux.
+
+### Exemple :
+Supposons que tu as un flux de données qui traite les transactions d'un site e-commerce. Tu peux diviser le flux en plusieurs shards :
+- **Shard 1** : Transactions provenant d'Amérique du Nord.
+- **Shard 2** : Transactions provenant d'Europe.
+- **Shard 3** : Transactions provenant d'Asie.
+
+Chaque shard traitera indépendamment les données pour une région spécifique, permettant une **meilleure gestion** et une **scalabilité** selon les besoins de chaque région.
+
+### Quand augmenter ou diminuer les shards ?
+- **Augmenter le nombre de shards** si :
+  - Le flux dépasse la capacité d'un shard (plus de 1 Mo/s d'ingestion ou plus de 1000 enregistrements/s).
+  - Tu as besoin de traiter plus de données ou de lire plus de données simultanément.
+  
+- **Diminuer le nombre de shards** si :
+  - Le flux reçoit moins de données que prévu et tu veux réduire les coûts (chaque shard coûte de l'argent).
+
+### En résumé :
+Un **shard** est une unité de base dans Kinesis Streams qui détermine la capacité de gestion des données en temps réel. En divisant le flux en plusieurs shards, tu peux mieux gérer et répartir les données pour un traitement optimisé et scalable.
+
+
