@@ -167,3 +167,29 @@ Chaque shard traitera indépendamment les données pour une région spécifique,
 Un **shard** est une unité de base dans Kinesis Streams qui détermine la capacité de gestion des données en temps réel. En divisant le flux en plusieurs shards, tu peux mieux gérer et répartir les données pour un traitement optimisé et scalable.
 
 
+
+# Annexe 2 - contrôle plus granulaire ?
+
+
+Le terme **"granulaire"** dans notre contexte signifie un niveau de contrôle ou de gestion **plus détaillé et plus précis**. Lorsque l'on dit que **Kinesis Streams** offre un contrôle "plus granulaire", cela signifie que tu as la possibilité de gérer et de personnaliser chaque aspect du flux de données avec une **plus grande précision**.
+
+### Explication du terme "granulaire" ici :
+
+- **Kinesis Firehose** : C'est une solution plus **automatisée** et simple à utiliser, mais elle t'offre **moins de contrôle**. Tu configures les paramètres globaux (comme le buffer, les destinations, et les transformations de données via Lambda), mais tu ne gères pas les détails de chaque flux de données de manière spécifique.
+  
+- **Kinesis Streams** : À l'inverse, offre un contrôle **granulaire** parce que tu peux :
+  - **Gérer les shards** (c'est-à-dire, comment les données sont réparties et ingérées).
+  - **Partitionner les données** plus précisément en fonction des clés de partition.
+  - **Contrôler la manière dont les données sont traitées** en amont, c'est-à-dire avant qu'elles n'arrivent à destination.
+  - **Configurer la consommation des données** par plusieurs applications avec plus de contrôle sur qui reçoit quoi et comment les données sont traitées.
+
+### Exemple pour mieux comprendre :
+Imagine que tu gères une boulangerie :
+- **Contrôle non granulaire (Firehose)** : Tu décides simplement de produire 100 baguettes par jour. Tu n'as pas à te soucier des détails de la répartition des ressources (farine, levure, etc.). Tout est automatisé. Tu reçois simplement tes 100 baguettes.
+  
+- **Contrôle granulaire (Streams)** : Ici, tu décides **précisément** combien de farine sera utilisée pour chaque fournée, à quel moment ajouter la levure, et quel boulanger travaille sur chaque fournée. Tu gères **chaque étape** du processus avec beaucoup plus de précision.
+
+Dans le cas de **Kinesis Streams**, cela signifie que tu peux décider **plus précisément** comment chaque lot de données sera ingéré, transformé, et consommé, par rapport à **Firehose**, qui est plus simple et automatisé mais avec moins de personnalisation.
+
+### Résumé :
+Le **contrôle granulaire** fait référence à la possibilité de **personnaliser et de gérer en détail** les différentes étapes du traitement des données, alors que **Firehose** te simplifie la tâche en automatisant ces processus sans autant de flexibilité.
