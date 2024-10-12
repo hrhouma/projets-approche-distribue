@@ -326,7 +326,7 @@ DELETE /apache_logs
 
     - Copiez et collez le texte suivant dans la console :
 
-  ```json
+```json
       PUT apache_logs
       {
           "settings" : {
@@ -382,7 +382,7 @@ DELETE /apache_logs
               }
           }
       }
-  ```
+```
 
     - **Remarque** : Copiez la commande exactement comme elle est écrite, sinon vous risquez de recevoir des erreurs lors de son exécution. Vous devriez voir le texte exact montré dans l'image suivante.
 
@@ -394,13 +394,13 @@ DELETE /apache_logs
 
     - La réponse suivante s'affiche :
 
-  ```json
+```json
       {
         "acknowledged": true,
         "shards_acknowledged": true,
         "index": "apache_logs"
       }
-  ```
+```
 
 ### **Analyse :**
 Cette commande a créé un nouvel index appelé **apache_logs**. Lorsque les journaux d'accès du serveur web seront mis à jour en raison du trafic sur le site, le flux de livraison **Kinesis Data Firehose** remplira le cluster **OpenSearch Service** avec des données en fonction des mappages dans la commande. La commande définit les types de données pour les champs dans les fichiers journaux du serveur au sein de la base de données OpenSearch Service. Maintenant que vous avez un index, vous pouvez générer des journaux d'accès web et créer des visualisations basées sur les données de cet index.
