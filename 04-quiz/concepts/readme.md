@@ -22,7 +22,7 @@ Bienvenue dans le dépôt de documentation sur AWS et OpenSearch. Ce projet couv
 - [Quand Choisir Kinesis ou Kafka](./14-Quand%cC%B7A7tC3A9ntrc3A9ePulsar.md)
 - [Alternatives à Apache Kafka](./15-Alternatives%cC%B7A7tC3A9ntrc3A9ePulsar.md)
 - [Comparaison entre Apache Kafka et Apache Pulsar](./16-Comparaison%cC%B7A7tC3A9ntrc3A9ePulsar.md)
-- [Sécuriser vos Données en Transit et au Repos](./17-Sécuriser vos Données en Transit et au Repos.md)
+- [Sécuriser vos Données en Transit et au Repos](./17-Sécuriser%20vos%20Données%20en%20Transit%20et%20au%20Repos.md)
 
 
 
