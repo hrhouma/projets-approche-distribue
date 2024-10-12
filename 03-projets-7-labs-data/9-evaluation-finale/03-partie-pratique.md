@@ -458,6 +458,42 @@ WHERE country IN ('China');
 ```
 
 
+![image](https://github.com/user-attachments/assets/bf25f050-ae4a-4d88-8db9-5e50f712fdff)
+
+
+
+
+Remarque : Vous pouvez exécuter des requêtes supplémentaires sur la vue ou la table pour obtenir plus d'informations sur les données.
+
+# Soumission de votre travail
+
+1. Pour enregistrer vos progrès, choisissez **Submit** en haut de ces instructions.
+
+2. Lorsque vous y êtes invité, choisissez **Yes**.
+
+3. Après quelques minutes, le panneau de notes apparaît et vous montre combien de points vous avez obtenus pour chaque tâche. Si les résultats ne s'affichent pas après quelques minutes, choisissez **Grades** en haut de ces instructions.
+
+   **Astuce :** Vous pouvez soumettre votre travail plusieurs fois. Après avoir modifié votre travail, choisissez à nouveau **Submit**. Votre dernière soumission sera enregistrée pour ce lab.
+
+4. Pour obtenir un retour détaillé sur votre travail, choisissez **Submission Report**.
+
+---
+
+# Fin de votre session
+
+**Rappel :** Cet environnement de lab est persistant. Les données sont conservées jusqu'à ce que vous utilisiez le budget alloué ou jusqu'à la date de fin du cours (selon ce qui survient en premier).
+
+Pour préserver votre budget lorsque vous avez terminé pour la journée, ou lorsque vous avez terminé de travailler activement sur la tâche pour le moment, procédez comme suit :
+
+1. En haut de cette page, choisissez **End Lab**, puis choisissez **Yes** pour confirmer que vous souhaitez mettre fin au lab.
+
+   Un panneau de message indique que le lab est en cours de terminaison.
+
+   **Remarque :** Choisir **End Lab** dans cet environnement de projet de fin de parcours ne supprimera pas les ressources que vous avez créées. Elles seront toujours là la prochaine fois que vous choisirez **Start Lab** (par exemple, un autre jour).
+
+2. Pour fermer le panneau, choisissez **Close** dans le coin supérieur droit.
+
+
 
 
 
