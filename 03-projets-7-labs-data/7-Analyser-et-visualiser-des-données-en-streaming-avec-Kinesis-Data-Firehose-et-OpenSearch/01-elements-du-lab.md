@@ -1,4 +1,6 @@
+-------------------------------------------------
 # **Aperçu du laboratoire et objectifs**
+-------------------------------------------------
 
 Les problèmes liés aux mégadonnées nécessitent souvent des solutions en temps réel. Cela correspond à la partie « vélocité » des cinq V des mégadonnées (volume, variété, vélocité, véracité et valeur). Les sources de données courantes pour ces scénarios incluent les flux vidéo, les journaux d'application et les dispositifs d'infrastructure. Les données dans ces scénarios de vélocité sont appelées données de streaming. Amazon Kinesis est une suite de services que vous pouvez utiliser pour analyser des données de streaming.
 
@@ -23,7 +25,9 @@ Ce laboratoire nécessitera environ 90 minutes pour être complété.
 
 Dans cet environnement de laboratoire, l'accès aux services et aux actions des services AWS peut être limité à ceux nécessaires pour accomplir les instructions du laboratoire. Vous pourriez rencontrer des erreurs si vous tentez d'accéder à d'autres services ou d'effectuer des actions en dehors de celles décrites dans ce laboratoire.
 
+-------------------------------------------------
 # **Scénario**
+-------------------------------------------------
 
 L'administrateur du site web de la librairie universitaire souhaite obtenir des informations sur la manière dont les visiteurs interagissent avec le site. Elle utilisait un système de suivi basé sur JavaScript pour afficher des graphiques contenant des informations sur l'activité des utilisateurs. Ces informations incluent l'emplacement des utilisateurs, les navigateurs qu'ils utilisent et s'ils accèdent au site via des appareils mobiles. Les données peuvent également indiquer si les visiteurs atteignent la page produit d'une librairie via une page de recherche ou une page de recommandations.
 
@@ -39,9 +43,9 @@ Lorsque vous commencez le laboratoire, l'environnement contiendra les ressources
 
 ![image](https://github.com/user-attachments/assets/0a45b8a8-be38-4577-a997-73e2cb6bf580)
 
----
-
+-------------------------------------------------
 ### **L'infrastructure est conçue pour analyser les données de streaming et se compose des éléments suivants :**
+-------------------------------------------------
 
 - **Une instance EC2** qui exécute un serveur web. L'instance se trouve dans un sous-réseau public.
 
@@ -72,9 +76,9 @@ Lorsque vous commencez le laboratoire, l'environnement contiendra les ressources
 ![image](https://github.com/user-attachments/assets/344c5510-8de4-4ff3-ae46-2425257793d7)
 
 
----
-
+-------------------------------------------------
 ### **Tâches numérotées**
+-------------------------------------------------
 
 | **Tâche Numérotée** | **Détail** |
 | -------------------- | ---------- |
@@ -105,9 +109,9 @@ Lorsque vous commencez le laboratoire, l'environnement contiendra les ressources
     - **Conseil** : Si un nouvel onglet du navigateur ne s'ouvre pas, une bannière ou une icône se trouve généralement en haut de votre navigateur avec le message indiquant que votre navigateur empêche le site d'ouvrir des fenêtres contextuelles. Choisissez la bannière ou l'icône, puis choisissez « **Autoriser les fenêtres contextuelles** ».
 
 
----
-
-### **Tâche 1 : Révision de l'instance EC2 et de sa configuration de sécurité**
+-------------------------------------------------
+# **Tâche 1 : Révision de l'instance EC2 et de sa configuration de sécurité**
+-------------------------------------------------
 
 Commencez par examiner la configuration de l'instance EC2 pour le serveur web.
 
@@ -154,9 +158,10 @@ Commencez par examiner la configuration de l'instance EC2 pour le serveur web.
 **Excellent !** Dans cette tâche, vous avez révisé l'instance EC2 et examiné comment elle est sécurisée.
 
 
----
 
+-------------------------------------------------
 ### **Tâche 2 : Révision du flux de livraison Kinesis Data Firehose**
+-------------------------------------------------
 
 Vous allez maintenant examiner la configuration du flux de livraison Kinesis Data Firehose.
 
@@ -186,17 +191,13 @@ Vous allez maintenant examiner la configuration du flux de livraison Kinesis Dat
 
 **Félicitations !** Dans cette tâche, vous avez examiné la configuration du flux de livraison Kinesis Data Firehose.
 
----
-
-J'espère que cette traduction détaillée vous convient ! Si vous avez besoin de plus d'informations ou de clarifications, n'hésitez pas à demander.
-# Sep
 
 
-Voici la traduction détaillée en français de la partie concernant la révision du cluster OpenSearch Service.
-
----
+-------------------------------------------------
 
 ### **Tâche 3 : Révision du cluster OpenSearch Service**
+-------------------------------------------------
+
 
 Vous allez maintenant examiner la configuration du cluster OpenSearch Service qui a été créé pour vous.
 
@@ -252,25 +253,20 @@ Vous allez maintenant examiner la configuration du cluster OpenSearch Service qu
 
 **Félicitations !** Dans cette tâche, vous avez examiné la configuration du cluster OpenSearch Service.
 
----
-
-J'espère que cette traduction vous convient ! Si vous avez besoin d'éclaircissements ou de plus d'informations, n'hésitez pas à demander.
 
 
-# Sep
-
-
-Voici la traduction détaillée en français de la partie concernant la configuration d'un index dans OpenSearch.
-
----
-
+-------------------------------------------------
 ### **Tâche 4 : Configurer un index OpenSearch**
+-------------------------------------------------
 
 Dans cette tâche, vous allez vous connecter à OpenSearch Dashboards et configurer un index pour les journaux du serveur web qui sont diffusés à partir de Kinesis Data Firehose.
 
 - **Remarque** : L'indexation est la méthode utilisée par les moteurs de recherche pour organiser les données afin de les récupérer rapidement. La structure résultante est appelée un **index**. Pour plus d'informations sur les index OpenSearch, consultez **Index Data**.
 
 Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un index, OpenSearch identifie chaque document à l'aide d'un identifiant unique.
+
+
+
 
 1. **Connexion et modification du mot de passe LabUser.**
 
@@ -292,6 +288,10 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
     - Si une fenêtre contextuelle vous demande si vous souhaitez **Ajouter des données** ou **Explorer par vous-même**, choisissez **Explorer par vous-même**.
     
     - La page d'accueil d'OpenSearch Dashboards s'affiche.
+  
+
+![image](https://github.com/user-attachments/assets/6d736aec-1f8a-44ed-bc76-a96aea2b80a4)
+
 
 2. **Suppression des journaux du serveur web existants.**
 
@@ -300,6 +300,10 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
     - La console **Dev Tools** s'affiche.
 
     - Dans la zone de console, remplacez le texte JSON existant par la commande SQL suivante :
+
+![image](https://github.com/user-attachments/assets/6eb7fed2-d8b4-40ec-bc6d-5e83f907d577)
+
+
 
       ```sql
       DELETE /apache_logs
@@ -387,6 +391,8 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
 
     - Pour exécuter la commande, choisissez l'icône de flèche bleue.
 
+![image](https://github.com/user-attachments/assets/24a41d6b-6e16-40ab-9fac-c47ab6ac2d9f)
+
     - La réponse suivante s'affiche :
 
       ```json
@@ -403,15 +409,6 @@ Cette commande a créé un nouvel index appelé **apache_logs**. Lorsque les jou
 ---
 
 **Félicitations !** Dans cette tâche, vous avez réussi à créer un nouvel index dans OpenSearch.
-
----
-
-Si vous avez besoin de plus de précisions ou d'aide pour la suite, n'hésitez pas à demander !
-
-
-# Sep
-
-Voici la traduction détaillée en français de la partie concernant la génération des journaux d'accès du serveur web.
 
 ---
 
@@ -441,15 +438,6 @@ Pour commencer le processus de test, vous devez d'abord générer des journaux s
 
 ---
 
-J'espère que cette traduction est à votre convenance. Si vous avez besoin d'autres informations ou précisions, n'hésitez pas à me le faire savoir !
-
-
-
-# Sep
-
-Voici la traduction détaillée en français de la partie concernant l'observation des événements de journaux dans CloudWatch.
-
----
 
 ### **Tâche 6 : Observation des événements de journaux dans CloudWatch**
 
@@ -478,6 +466,9 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
     - Choisissez le lien **Log stream** pour le flux de journaux le plus récent.
 
     - Les événements dans le flux de journaux sont répertoriés comme montré dans l'image suivante. Chaque événement inclut un horodatage (timestamp) au moment où il a été créé, ainsi qu'un message avec les détails de l'événement.
+
+![image](https://github.com/user-attachments/assets/ee21949a-1c13-466f-ae26-17fdf18d1382)
+
 
     - Développez l'un des journaux contenant un message qui commence par **Incoming Record from Kinesis Firehose**.
 
@@ -541,19 +532,10 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
 
     - **Analyse** : Cet événement apparaît périodiquement dans le flux de journaux et inclut des informations d'utilisation pour Kinesis Data Firehose et Lambda. Par exemple, la **Billed Duration** (Durée facturée) est le temps qu'il faut à Lambda pour traiter un groupe de journaux d'accès web et les enrichir. Avec Kinesis Data Firehose et Lambda, les clients AWS sont facturés pour ce qu'ils utilisent.
 
----
+![image](https://github.com/user-attachments/assets/749002f4-4705-4188-b310-f9a0d94ef147)
+
 
 **Super !** Vous avez examiné les événements des journaux CloudWatch associés au flux de livraison Kinesis Data Firehose et à la fonction Lambda de votre POC. Le flux de livraison et la fonction Lambda ont automatiquement ingéré et transformé les journaux d'accès web que vous avez créés en naviguant sur le site. Vous pouvez consulter les événements des journaux dans CloudWatch pour voir le processus en cours et obtenir des informations sur l'utilisation des ressources.
-
----
-
-J'espère que cette traduction répond à vos attentes. N'hésitez pas à me demander si vous avez besoin de plus de précisions ou d'informations supplémentaires !
-
-# Sep
-
-
-
-Voici la traduction détaillée en français de la partie concernant la création du modèle d'index dans OpenSearch Service.
 
 ---
 
@@ -585,30 +567,8 @@ Maintenant que vous avez collecté des journaux d'accès et observé leur traite
 
 **Parfait !** Dans cette tâche, vous avez créé un modèle d'index OpenSearch en utilisant le champ **datetime** inclus dans les données de journaux d'accès.
 
----
-
-Si vous avez besoin d'autres clarifications ou d'informations supplémentaires, n'hésitez pas à demander !
 
 
-
-
-
-
-
-
-
-
-
-
-# Sep
-
-
-
-
-
-Voici la traduction détaillée en français de la partie concernant la création d'une visualisation en graphique circulaire.
-
----
 
 ### **Tâche 8 : Création d'une visualisation en graphique circulaire**
 
@@ -680,6 +640,10 @@ Maintenant que l'index est configuré, vous pouvez utiliser **OpenSearch Dashboa
     
     - Vos filtres sont appliqués au graphique, et des cercles supplémentaires sont ajoutés à la visualisation.
 
+
+
+
+
 7. **Appliquer le style donut au graphique circulaire et configurer d'autres paramètres du graphique.**
 
     - Dans le volet à droite de la page, choisissez **Options**.
@@ -696,6 +660,11 @@ Maintenant que l'index est configuré, vous pouvez utiliser **OpenSearch Dashboa
     
     - **Remarque** : Les couleurs de votre visualisation peuvent ne pas correspondre aux couleurs de l'image.
 
+
+![image](https://github.com/user-attachments/assets/80d43cc1-9701-4850-9daa-f2890287e322)
+  
+![image](https://github.com/user-attachments/assets/d7246955-3a12-4cf3-93fd-4545400f5034)
+
 8. **Interagir avec le graphique pour obtenir des informations.**
 
     - Passez la souris sur chaque tranche du graphique pour voir les détails des données incluses dans chaque tranche.
@@ -706,7 +675,8 @@ Maintenant que l'index est configuré, vous pouvez utiliser **OpenSearch Dashboa
     
     - Le graphique circulaire résultant ressemble à ce qui suit :
 
----
+
+![image](https://github.com/user-attachments/assets/d1be515c-abb7-4545-856b-e7428d73574d)
 
 **Analyse** : Ce graphique circulaire empilé est similaire au précédent mais inclut le filtre pour un navigateur spécifique.
 
@@ -716,9 +686,6 @@ Maintenant que l'index est configuré, vous pouvez utiliser **OpenSearch Dashboa
 
 ---
 
-Si vous avez besoin de plus de précisions ou d'assistance pour d'autres parties, n'hésitez pas à me le faire savoir !
-
-# Sep
 
 ### **Tâche 9 : Création d'une visualisation en carte thermique (heat map)**
 
@@ -750,6 +717,9 @@ Vous allez maintenant créer une visualisation en **carte thermique** pour répo
     
     - **Conseil** : Pour simplifier les étapes suivantes, vous pouvez réduire le premier bucket que vous avez créé, comme illustré dans l'image suivante.
 
+![image](https://github.com/user-attachments/assets/893a5038-0cc6-4019-9af7-6c0a87f984f7)
+
+
 3. **Créer un bucket pour la page web.**
 
     - Choisissez **Add** > **Y-axis** (Axe Y).
@@ -775,6 +745,8 @@ Vous allez maintenant créer une visualisation en **carte thermique** pour répo
     - Votre carte thermique devrait ressembler à l'image suivante, mais elle variera en fonction des pages que vous avez visitées lorsque vous avez généré les journaux d'accès web et des navigateurs que vous avez utilisés.
 
 ---
+
+![image](https://github.com/user-attachments/assets/e4180cea-28bb-4b38-9d40-65dd244bc00e)
 
 ### **Analyse :**
 D'après cette image de la visualisation, les visiteurs ont accédé plus fréquemment aux pages de produits **Echo** et **FireStick** depuis la page de recherche que depuis la page de recommandations. L'équipe pourrait en déduire que la page de recherche est plus efficace que la page de recommandations pour diriger les utilisateurs vers les pages de produits.
@@ -827,8 +799,4 @@ Pour plus d'informations sur les services et concepts couverts dans ce laboratoi
 
 - **Fine-grained access control in Amazon OpenSearch Service**
 - **Bucket aggregations**
-
----
-
-**© 2022, Amazon Web Services, Inc. et ses affiliés. Tous droits réservés.** Ce travail ne peut être reproduit ou redistribué, en tout ou en partie, sans l'autorisation écrite préalable d'Amazon Web Services, Inc. La copie commerciale, le prêt ou la vente sont interdits.
 
