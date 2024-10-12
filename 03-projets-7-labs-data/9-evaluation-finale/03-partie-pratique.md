@@ -184,4 +184,92 @@ Dans cette première partie du projet de fin de parcours, vous allez configurer 
 
 
 
+# Tâche 2 : Utilisation d'un robot d'exploration AWS Glue et interrogation de plusieurs fichiers avec Athena
+
+La requête que vous avez exécutée dans la tâche précédente fonctionne bien pour un seul fichier de données. Cependant, que faire si vous devez interroger un ensemble de données plus volumineux qui se compose de plusieurs fichiers ?
+
+Dans cette deuxième partie du projet de fin de parcours, vous allez interroger des données stockées dans plusieurs fichiers. Pour ce faire, vous allez configurer un robot d'exploration AWS Glue pour découvrir la structure des données, puis utiliser Athena pour interroger les données.
+
+1. Pour observer la ligne d'en-tête des colonnes et les premières lignes de données du fichier **SAU-HighSeas-71-v48-0.csv**, utilisez la commande `head`.
+
+2. Rappelez-vous que vous avez déjà téléchargé le fichier sur votre IDE AWS Cloud9.
+
+3. Le fichier contient les mêmes colonnes que le fichier **SAU-GLOBAL-1-v48-0.csv**, mais il possède des colonnes supplémentaires. Le tableau suivant montre les colonnes contenues dans chaque fichier.
+
+
+![image](https://github.com/user-attachments/assets/d842e258-e7e7-4128-93e1-b5a8218fc251)
+
+# Analyse :
+
+Tout comme le jeu de données **SAU-GLOBAL-1-v48-0** que vous avez déjà téléchargé sur Amazon S3 et interrogé, le jeu de données **SAU-HighSeas-71-v48-0** décrit également les prises de poissons en haute mer. Cependant, le jeu de données **HighSeas** inclut uniquement des données provenant d'une seule zone de haute mer, appelée **Pacifique, Centre-Ouest**. Cette zone est mise en évidence dans la capture d'écran suivante du site web *The Sea Around Us*.
+
+
+![image](https://github.com/user-attachments/assets/48d54c9b-ea41-454b-88ae-a79c072708a6)
+
+
+
+Parmi les colonnes supplémentaires du jeu de données **HighSeas**, deux sont particulièrement intéressantes :
+
+- La colonne **area_name** contient la valeur "Pacific, Western Central" dans chaque ligne.
+- La colonne **common_name** contient des valeurs décrivant certains types de poissons (par exemple, "Maquereaux, thons, bonites").
+
+
+1. Convertissez le fichier **SAU-HighSeas-71-v48-0.csv** au format Parquet et téléchargez-le dans le bucket **data-source**.
+
+2. Créez une base de données AWS Glue et un robot d'exploration AWS Glue avec les paramètres suivants :
+
+   - Nommez la base de données **fishdb**.
+   - Nommez le robot d'exploration **fishcrawler**.
+   - Configurez le robot d'exploration pour utiliser le rôle IAM **CapstoneGlueRole** afin d'explorer le contenu du bucket S3 **data-source**.
+   - Exportez les résultats du robot d'exploration vers la base de données **fishdb**.
+   - Réglez la fréquence du robot d'exploration sur **À la demande (On demand)**.
+
+3. Exécutez le robot d'exploration pour créer une table contenant les métadonnées dans la base de données AWS Glue.
+
+4. Vérifiez que la table attendue a bien été créée.
+
+5. Pour confirmer que la table a correctement catégorisé les données, utilisez Athena pour exécuter des requêtes SQL sur chaque colonne de la nouvelle table.
+
+   **Important :** Avant d'exécuter la première requête dans Athena, configurez l'éditeur de requêtes Athena pour exporter les données dans le bucket **query-results**.
+
+   Exemple de requête :
+
+   ```
+   SELECT DISTINCT area_name FROM fishdb.data_source_xxxxx;
+   ```
+
+   **Remarque :** La requête exemple renvoie deux résultats. Pour cette colonne, chaque ligne du jeu de données contient soit la valeur "Pacific, Western Central" (pour les lignes issues de **SAU-HighSeas-71-v48-0.parquet**), soit une valeur nulle (pour les lignes issues de **SAU-GLOBAL-1-v48-0.parquet**).
+
+---
+
+6. Maintenant que votre table de données est définie, exécutez des requêtes pour confirmer qu'elle fournit des résultats utiles.
+
+   - Pour trouver la valeur en dollars US de tous les poissons capturés par le pays Fidji dans la zone de haute mer **Pacific, Western Central** depuis 2001, organisés par année, utilisez la requête suivante (assurez-vous de remplacer **<FMI_1>** et **<FMI_2>** par les valeurs correctes) :
+
+   ```
+   SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValuePacificWCSeasCatch
+   FROM <FMI_1>
+   WHERE area_name LIKE '%Pacific%' AND fishing_entity = 'Fiji' AND year > <FMI_2>
+   GROUP BY year, fishing_entity
+   ORDER BY year;
+   ```
+
+   **Remarque :** La partie **CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2))** de la requête garantit que le format des données retournées dans la colonne **landed_value** est affiché dans un format convivial (dollars et centimes) au lieu d'un format scientifique.
+
+7. **Défi :** Trouvez la valeur en dollars US de tous les poissons capturés par le pays Fidji dans toutes les zones de haute mer depuis 2001, organisés par année. Dans vos résultats, nommez la colonne des valeurs en dollars US **ValueAllHighSeasCatch**.
+
+   **Conseils utiles pour le défi :**
+
+   - Votre clause **WHERE** doit inclure deux mots-clés **AND**.
+   - Pour renvoyer des lignes qui ne contiennent pas d'entrée pour une colonne particulière, utilisez **IS NULL**.
+
+8. Après avoir créé et exécuté la requête correcte et visualisé les résultats, créez une vue basée sur la requête :
+
+   - Choisissez **Create > View from query**.
+   - Nommez la vue **challenge**.
+
+
+
+
+
 
