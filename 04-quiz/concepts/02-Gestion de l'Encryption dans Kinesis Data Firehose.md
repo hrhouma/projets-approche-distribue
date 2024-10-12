@@ -1,3 +1,7 @@
+# 🔐 Guide d'Activation et de Gestion de l'Encryption dans Amazon Kinesis Data Firehose
+
+# 🔒 Gestion de l'Encryption dans Kinesis Data Firehose
+
 ----------------------
 # 💡 Question à laquelle ce document répond :
 ----------------------
