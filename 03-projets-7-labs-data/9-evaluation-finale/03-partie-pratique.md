@@ -1,378 +1,187 @@
----------------------------------------------------
-# Projet Capstone en Ingénierie des Données
----------------------------------------------------
+---------------------------
+# Projet Capstone 
+---------------------------
 
-# Aperçu et Objectifs
+# **Aperçu et objectifs**
 
-Tout au long de ce cours, vous avez réalisé des laboratoires pratiques, où vous avez utilisé les fonctionnalités de différents services AWS pour ingérer de grandes quantités de données, les transformer, et extraire des informations.
+Tout au long de ce cours, vous avez réalisé des travaux pratiques, où vous avez utilisé les fonctionnalités de différents services AWS pour pratiquer l'ingestion de grands ensembles de données, leur transformation et l'extraction d'informations.
 
-Dans ce projet Capstone, vous êtes mis au défi de construire une solution utilisant plusieurs services AWS que vous connaissez déjà, sans suivi étape par étape. Certaines sections de ce projet sont volontairement difficiles.
+Dans ce projet de fin de parcours, vous êtes mis au défi de construire une solution qui utilise de nombreux services AWS que vous connaissez déjà, sans recevoir de directives détaillées étape par étape. Certaines parties de l'exercice sont conçues pour être difficiles.
 
-Ce projet Capstone vous demande de réaliser les tâches suivantes :
+Ce projet capstone vous mettra au défi de faire les choses suivantes :
 
-- Lancer et configurer une instance de l'environnement de développement intégré AWS Cloud9.
-- Transformer des fichiers CSV en format Apache Parquet et les télécharger sur Amazon S3.
-- Créer un explorateur AWS Glue pour déduire la structure des données.
+- Lancer et configurer une instance d'environnement de développement intégré (IDE) AWS Cloud9.
+- Transformer des fichiers de données au format CSV en format Apache Parquet et les télécharger sur Amazon S3.
+- Créer un robot d'exploration AWS Glue pour déduire la structure des données.
 - Utiliser Amazon Athena pour interroger les données.
-- Créer une vue dans Athena.
+- Créer une vue Athena.
 - Exécuter des requêtes sur la vue Athena pour analyser les données.
 
-# Durée et Gestion du Budget
+# **Durée et suivi de votre budget**
 
-Ce projet devrait prendre environ **4 heures**.
+Ce projet de fin de parcours devrait prendre environ 4 heures à compléter.
 
-Cet environnement est persistant. Lorsque le minuteur atteint **0:00**, la session se termine, mais toutes les données et ressources que vous avez créées dans votre compte AWS seront conservées. Si vous relancez une session (par exemple, le lendemain), vous retrouverez votre travail dans l'environnement du laboratoire. Vous pouvez aussi prolonger votre session en cliquant sur **Démarrer le Lab** à tout moment avant la fin du compte à rebours.
+Cet environnement est persistant. Lorsque le minuteur de session arrive à 0:00, la session se termine, mais toutes les données et ressources que vous avez créées dans le compte AWS seront conservées. Si vous lancez une nouvelle session plus tard (par exemple, le jour suivant), vous retrouverez votre travail dans l'environnement de lab. De plus, à tout moment avant que le minuteur de session n'atteigne 0:00, vous pouvez choisir "Start Lab" à nouveau pour prolonger la durée de la session.
 
-**Important** : Surveillez votre budget dans l'interface du laboratoire. Si vous dépassez votre budget, votre compte sera désactivé, et tout votre travail ainsi que vos ressources seront perdus.
+# **Important :
 
-# Restrictions des Services AWS
+** Surveillez votre budget de lab dans l'interface du lab. Lorsque vous avez une session de lab active, les dernières informations connues sur le budget restant s'affichent en haut de cet écran. Ces données proviennent de AWS Budgets, qui se met à jour généralement toutes les 8 à 12 heures. Ainsi, le budget restant que vous voyez pourrait ne pas refléter votre activité la plus récente sur le compte. Si vous dépassez votre budget de lab, votre compte de lab sera désactivé, et tout progrès et toutes les ressources seront perdus. Il est donc important de gérer vos dépenses.
 
-Dans cet environnement de laboratoire, l'accès aux services AWS peut être restreint à ceux nécessaires pour compléter les instructions.
+# **Restrictions des services AWS**
 
-# Le Jeu de Données
+Dans cet environnement de lab, l'accès aux services AWS et aux actions de service pourrait être limité à ceux nécessaires pour suivre les instructions du lab. Vous pourriez rencontrer des erreurs si vous tentez d'accéder à d'autres services ou d'effectuer des actions au-delà de ce qui est décrit dans ce lab.
 
-- Le site *The Sea Around Us* fournit un jeu de données avec des informations historiques sur la pêche dans tous les océans du monde, de 1950 à 2018. 
-- Les données comprennent des informations sur les captures annuelles par pays, type de poisson, zones de pêche, et la valeur des captures en dollars US (2010).
-- Les données sont disponibles au format CSV et peuvent être téléchargées depuis le site *The Sea Around Us*.
+# **Le jeu de données**
 
-# Carte des zones de haute mer
+Le site web *The Sea Around Us* fournit un jeu de données contenant des informations historiques étendues sur les pêcheries dans toutes les parties de chaque océan du monde. Les données incluent des informations sur les prises de pêcherie annuelles de 1950 à 2018.
 
-Les zones de pêche incluent les **eaux internationales** (au-delà de 200 milles nautiques) et les **Zones Économiques Exclusives (ZEE)** (à moins de 200 milles nautiques).
+Les données peuvent être téléchargées au format CSV depuis le site *The Sea Around Us*. Le jeu de données contient des colonnes d'informations pour chaque année, notamment quels pays ont capturé quels types de poissons et dans quelles zones. Les données indiquent également combien de tonnes de poissons ont été capturées et quelle était la valeur des prises, mesurée en dollars américains de 2010.
 
-![image](https://github.com/user-attachments/assets/1c3a1297-ddcc-418b-b1e4-51b95ab9042b)
+Pour comprendre les données, il est utile de comprendre ce que signifient les zones de haute mer et les zones ZEE :
 
-# Carte des ZEE dans le monde
-![image](https://github.com/user-attachments/assets/f3ffa1c3-2413-413e-ade4-e8ad733b16d0)
+- **Haute mer (aussi appelée mers internationales)** : Zones de l'océan situées à au moins 200 miles nautiques de la côte de tout pays. Les ressources, y compris les poissons dans ces zones, sont généralement considérées comme n'appartenant à aucun pays en particulier. La carte suivante, qui est une capture d'écran du site web *The Sea Around Us*, montre comment le jeu de données divise les zones de haute mer (zones en gris foncé) en zones uniques de haute mer.
 
-Les données sont sous licence Creative Commons Attribution Non-Commercial 4.0 International.
+![image](https://github.com/user-attachments/assets/0e68393e-c657-4673-af96-7a64935e306a)
 
-# Remarque en anglais
-The Sea Around Us data are (where not otherwise regulated) under a Creative Commons Attribution Non-Commercial 4.0 International License (https://creativecommons.org/licenses/by-nc/4.0/). Notices regarding copyrights (© The University of British Columbia), license and disclaimer can be found under http://www.seaaroundus.org/terms-and-conditions/. Pauly D., Zeller D., Palomares M.L.D. (Editors), 2020. Sea Around Us Concepts, Design and Data (seaaroundus.org).
+- **Zones économiques exclusives (ZEE)** : Zones situées à moins de 200 miles nautiques de la côte d'un pays. Chaque pays revendique généralement un accès exclusif aux ressources dans ces zones, y compris les poissons qui s'y trouvent. La carte suivante, qui est une capture d'écran du site web *The Sea Around Us*, montre les ZEE dans le monde.
+
+![image](https://github.com/user-attachments/assets/d743aabd-7067-4410-9d8c-baf4c2a7a513)
 
 
+Les données de *The Sea Around Us* sont (lorsqu'elles ne sont pas autrement réglementées) sous licence Creative Commons Attribution Non-Commercial 4.0 International (https://creativecommons.org/licenses/by-nc/4.0/). Les avis concernant les droits d'auteur (© Université de la Colombie-Britannique), la licence et les avertissements sont disponibles sur http://www.seaaroundus.org/terms-and-conditions/. Pauly D., Zeller D., Palomares M.L.D. (éditeurs), 2020. *Sea Around Us Concepts, Design and Data* (seaaroundus.org).
 
-# Scénario
+# **Scénario**
 
-Vous devez créer une infrastructure pour héberger les données de pêche afin que les analystes puissent générer des rapports sur l'impact de la pêche en haute mer. Vous testerez cette infrastructure avec trois fichiers de données provenant du site *The Sea Around Us* :
+Vous avez pour mission de créer l'infrastructure pour héberger des données sur la pêche afin que les analystes de données de votre organisation puissent créer des rapports sur l'impact de la pêche en haute mer. Vous avez décidé de construire l'infrastructure dans votre compte AWS et de la tester en utilisant trois fichiers de données provenant du jeu de données *The Sea Around Us*.
 
-- Le premier fichier contient des données sur toutes les zones de haute mer.
-- Le second fichier contient des données d'une zone spécifique du Pacifique, appelée *Pacific, Western Central*.
-- Le troisième fichier contient des données de la ZEE des Fidji.
+Dans ce projet de fin de parcours, vous allez travailler avec trois fichiers de données provenant du site web *The Sea Around Us* :
 
-Vous commencerez avec une infrastructure préconfigurée, comme illustré ci-dessous.
+- Le premier fichier contient des données de toutes les zones de haute mer.
+- Le deuxième fichier contient des données d'une seule zone de haute mer dans l'océan Pacifique, appelée **Pacifique, Centre-Ouest**, qui se trouve près de Fidji et de nombreux autres pays.
+- Le troisième fichier contient des données de la ZEE d'un seul pays (Fidji), qui est situé près de la zone de haute mer **Pacifique, Centre-Ouest**.
 
-# Architecture de début
+En travaillant avec cette variété de fichiers de données d'échantillon, vous serez en mesure de tester si la solution que vous construisez peut prendre en charge un ensemble de données beaucoup plus grand.
 
-![image](https://github.com/user-attachments/assets/7717f01e-d71b-461c-8bff-3d0c165cfa31)
+Lorsque vous commencerez ce projet de fin de parcours, l'environnement contiendra les ressources illustrées dans le diagramme suivant.
+
+![image](https://github.com/user-attachments/assets/a0264aeb-b3a7-4daa-b951-8fd9a99a4722)
+
+À la fin de ce projet de fin de parcours, vous aurez créé une architecture similaire à celle illustrée dans le diagramme suivant.
+
+![image](https://github.com/user-attachments/assets/d19b7dbc-9d9b-45dd-bc0c-6c71dfd22fc6)
 
 
-À la fin du projet, votre architecture ressemblera à ceci.
-
-# Architecture finale
-
-![image](https://github.com/user-attachments/assets/aa04b058-f50e-46f9-b7e5-0147dfbb1d41)
 
 
-# Accéder à la Console de Gestion AWS
 
-1. En haut de cette page, choisissez **Démarrer le Lab**.
-   - La session de laboratoire commence.
-   - Un minuteur s'affiche en haut de la page indiquant le temps restant dans la session.
 
-2. Une fois la session démarrée, cliquez sur le lien **AWS** en haut à gauche pour ouvrir la console de gestion AWS dans un nouvel onglet.
 
-# Tâche 1 – Configurer l'Environnement de Développement
 
-### Étapes à suivre :
 
-1. **Créer un environnement AWS Cloud9** avec les paramètres suivants :
-   - Nom de l'environnement : `CapstoneIDE`
-   - Instance EC2 : `t2.micro`
-   - Déployez l'instance pour qu'elle supporte les connexions SSH au VPC public Capstone.
 
-2. **Créer deux buckets S3** dans la région us-east-1 :
-   - `data-source-#####` (remplacez ##### par un nombre aléatoire).
-   - `query-results-#####` (remplacez ##### par un nombre aléatoire).
 
-3. **Télécharger les fichiers source CSV** avec les commandes suivantes dans le terminal AWS Cloud9 :
 
-```bash
-wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1-91570/lab-capstone/s3/SAU-GLOBAL-1-v48-0.csv
-wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1-91570/lab-capstone/s3/SAU-HighSeas-71-v48-0.csv
-wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1-91570/lab-capstone/s3/SAU-EEZ-242-v48-0.csv
-```
 
-4. **Afficher les premières lignes du fichier `SAU-GLOBAL-1-v48-0.csv`** :
+# Accéder à la console de gestion AWS
 
-```bash
-head -6 SAU-GLOBAL-1-v48-0.csv
-```
+1. En haut de ces instructions, choisissez **Start Lab**.
 
-5. **Convertir le fichier CSV en format Parquet** à l'aide de pandas :
+   - La session de lab démarre.
+   - Un minuteur s'affiche en haut de la page et montre le temps restant dans la session.
+   
+   **Astuce :** Pour rafraîchir la durée de la session à tout moment, choisissez à nouveau **Start Lab** avant que le minuteur n'atteigne 0:00.
 
-   a. Installer les outils nécessaires :
+   - Avant de continuer, attendez que l'icône circulaire à droite du lien **AWS** dans le coin supérieur gauche devienne verte.
 
-   ```bash
+2. Pour vous connecter à la console de gestion AWS, choisissez le lien **AWS** dans le coin supérieur gauche.
+
+   - Un nouvel onglet de navigateur s'ouvre et vous connecte à la console.
+
+   **Astuce :** Si un nouvel onglet de navigateur ne s'ouvre pas, une bannière ou une icône apparaît généralement en haut de votre navigateur avec le message indiquant que votre navigateur empêche le site d'ouvrir des fenêtres pop-up. Choisissez la bannière ou l'icône, puis sélectionnez **Autoriser les pop-ups**.
+
+---
+
+# Tâche 1 : Configuration de l'environnement de développement
+
+Dans cette première partie du projet de fin de parcours, vous allez configurer votre environnement de développement.
+
+1. Observez les détails du rôle **CapstoneGlueRole** d'AWS Identity and Access Management (IAM) qui a été créé pour vous.
+
+2. Créez un environnement AWS Cloud9 avec les paramètres suivants :
+
+   - Nommez l'environnement **CapstoneIDE**.
+   - Créez une nouvelle instance EC2 pour l'environnement, et utilisez une instance **t2.micro**.
+   - Déployez l'instance pour prendre en charge les connexions SSH au VPC Capstone, dans le sous-réseau public Capstone.
+   - Conservez tous les autres paramètres par défaut.
+
+3. Créez deux buckets S3 avec les paramètres suivants :
+
+   - Créez les buckets dans la région **us-east-1**.
+   - Nommez le premier bucket **data-source-#####** où ##### est un nombre aléatoire.
+   - Nommez le deuxième bucket **query-results-#####** où ##### est également un nombre aléatoire.
+   - Conservez tous les autres paramètres par défaut.
+
+4. Pour télécharger les trois fichiers sources au format .csv, exécutez les commandes suivantes dans le terminal de votre IDE AWS Cloud9 :
+
+   ```
+   wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1-91570/lab-capstone/s3/SAU-GLOBAL-1-v48-0.csv
+   wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1-91570/lab-capstone/s3/SAU-HighSeas-71-v48-0.csv
+   wget https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/CUR-TF-200-ACDENG-1-91570/lab-capstone/s3/SAU-EEZ-242-v48-0.csv
+   ```
+
+5. Pour observer la ligne d'en-tête des colonnes et les cinq premières lignes de données du fichier **SAU-GLOBAL-1-v48-0.csv**, exécutez la commande suivante :
+
+   ```
+   head -6 SAU-GLOBAL-1-v48-0.csv
+   ```
+
+   **Analyse :** Parmi d'autres détails, chaque ligne de données dans cet ensemble inclut :
+
+   - L'année de la pêche
+   - Le pays (**fishing_entity**) ayant réalisé la pêche
+   - Les tonnes de poissons pêchées cette année-là par ce pays
+   - La valeur en dollars américains de 2010 (**landed_value**) des poissons capturés cette année-là par ce pays
+
+   **Remarque :**
+
+   - Cet ensemble de données contient **561 675 lignes**.
+
+   **Astuce :** Pour confirmer cela, exécutez la commande suivante : 
+
+   ```
+   wc -l <filename>
+   ```
+
+   - L'ensemble de données comprend des données déclarées et des "meilleures estimations" pour toutes les pêches qui ont eu lieu dans les eaux internationales (c'est-à-dire, en dehors de la ZEE de tout pays) entre 1950 et 2018.
+   - Les zones ZEE comprennent les eaux océaniques situées à moins de 200 miles nautiques du littoral d'un pays. Par conséquent, les pêches reportées dans cet ensemble de données ont eu lieu à au moins 200 miles des côtes de tout pays.
+
+---
+
+6. Convertissez le fichier **SAU-GLOBAL-1-v48-0.csv** au format Parquet.
+
+   - Tout d'abord, vous devez installer certains outils sur votre IDE AWS Cloud9. Exécutez la commande suivante :
+
+   ```
    sudo pip3 install pandas pyarrow fastparquet
    ```
 
-   b. Convertir le fichier en Parquet :
+   - Ensuite, pour convertir le fichier au format Parquet, exécutez le code suivant :
 
-   ```bash
+   ```python
+   # Démarrer l'interpréteur Python interactif
    python3
+
+   # Utiliser pandas pour convertir le fichier au format parquet
    import pandas as pd
    df = pd.read_csv('SAU-GLOBAL-1-v48-0.csv')
    df.to_parquet('SAU-GLOBAL-1-v48-0.parquet')
    exit()
    ```
 
-6. **Télécharger le fichier Parquet** dans le bucket S3 `data-source` :
+   **Remarque :** Pandas est un outil utile pour travailler avec des fichiers de données. Pour plus d'informations, consultez le site web de pandas.
 
-```bash
-aws s3 cp SAU-GLOBAL-1-v48-0.parquet s3://data-source-#####
-```
+7. Pour télécharger le fichier **SAU-GLOBAL-1-v48-0.parquet** dans le bucket **data-source**, utilisez une commande AWS CLI dans le terminal de votre AWS Cloud9.
 
-# Tâche 2 – Utiliser AWS Glue et Interroger Plusieurs Fichiers avec Athena
 
-1. **Analyser la structure du fichier `SAU-HighSeas-71-v48-0.csv`** :
 
-```bash
-head -6 SAU-HighSeas-71-v48-0.csv
-```
 
-2. **Convertir ce fichier au format Parquet** et le télécharger dans S3.
-
-3. **Créer une base de données et un explorateur AWS Glue** avec les paramètres suivants :
-   - Base de données : `fishdb`
-   - Explorateur : `fishcrawler`
-   - Fréquence : À la demande.
-
-4. **Exécuter l'explorateur Glue** pour générer une table dans la base de données AWS Glue.
-
-5. **Interroger la table avec Athena**. Avant de lancer la première requête, configurez la sortie des requêtes dans le bucket `query-results`.
-
-Exemple de requête :
-
-```sql
-SELECT DISTINCT area_name FROM fishdb.data_source_xxxxx;
-```
-
-6. **Exécuter des requêtes supplémentaires** pour obtenir des informations sur les captures de poissons.
-
-Exemple :
-
-```sql
-SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValuePacificWCSeasCatch
-FROM fishdb.data_source_xxxxx
-WHERE area_name LIKE '%Pacific%' AND fishing_entity='Fiji' AND year > 2000
-GROUP BY year, fishing_entity
-ORDER BY year;
-```
-
-# Tâche 3 – Transformer un Nouveau Fichier et l'Ajouter au Jeu de Données
-
-1. **Analyser et harmoniser les colonnes** du fichier `SAU-EEZ-242-v48-0.csv` :
-
-```bash
-cp SAU-EEZ-242-v48-0.csv SAU-EEZ-242-v48-0-old.csv
-
-python3
-import pandas as pd
-data_location = 'SAU-EEZ-242-v48-0-old.csv'
-df = pd.read_csv(data_location)
-df.rename(columns={"fish_name": "common_name", "country": "fishing_entity"}, inplace=True)
-df.to_csv('SAU-EEZ-242-v48-0.csv', header=True, index=False)
-df.to_parquet('SAU-EEZ-242-v48-0.parquet')
-exit()
-```
-
-2. **Télécharger le fichier sur S3**, relancer l'explorateur AWS Glue pour mettre à jour les métadonnées, puis interroger les données dans Athena.
-
-
-
-
-# Étape 3 : Exécuter des Requêtes pour Vérifier les Données Intégrées
-
-1. **Exécuter des requêtes dans Amazon Athena** pour valider que les données du fichier `SAU-EEZ-242-v48-0.csv` ont bien été intégrées et que les colonnes harmonisées sont correctement catégorisées dans la table mise à jour.
-
-Exemple de requête pour vérifier les valeurs dans la colonne `area_name` :
-
-```sql
-SELECT DISTINCT area_name FROM fishdb.data_source_#####;
-```
-
-2. **Trouver la valeur en dollars US des poissons capturés par les Fidji dans les eaux internationales depuis 2001**, en utilisant la requête suivante :
-
-```sql
-SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValueOpenSeasCatch 
-FROM fishdb.data_source_##### 
-WHERE area_name IS NULL AND fishing_entity = 'Fiji' AND year > 2000 
-GROUP BY year, fishing_entity 
-ORDER BY year;
-```
-
-3. **Trouver la valeur en dollars US des poissons capturés par les Fidji dans la ZEE depuis 2001**, avec cette requête :
-
-```sql
-SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValueEEZCatch 
-FROM fishdb.data_source_##### 
-WHERE area_name LIKE '%Fiji%' AND fishing_entity = 'Fiji' AND year > 2000 
-GROUP BY year, fishing_entity 
-ORDER BY year;
-```
-
-4. **Comparer les captures dans la ZEE et les eaux internationales** : vous pouvez utiliser la requête suivante pour comparer les captures dans les deux zones, toujours pour les Fidji, depuis 2001 :
-
-```sql
-SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValueEEZAndOpenSeasCatch 
-FROM fishdb.data_source_##### 
-WHERE (area_name LIKE '%Fiji%' OR area_name IS NULL) AND fishing_entity = 'Fiji' AND year > 2000 
-GROUP BY year, fishing_entity 
-ORDER BY year;
-```
-
-### Analyse :
-Si les métadonnées sont correctement mises à jour, les résultats de la troisième requête devraient être égaux à la somme des résultats des deux premières requêtes pour chaque année.
-
-## Titre 1 : Créer une Vue dans Amazon Athena
-
-1. **Créer une vue** dans Athena pour observer les données sur les captures de maquereaux, qui seront utiles dans la prochaine étape.
-
-Exécutez la requête suivante pour créer la vue :
-
-```sql
-CREATE OR REPLACE VIEW MackerelsCatch AS
-SELECT year, area_name AS WhereCaught, fishing_entity AS Country, SUM(tonnes) AS TotalWeight
-FROM fishdb.data_source_##### 
-WHERE common_name LIKE '%Mackerels%' AND year > 2014 
-GROUP BY year, area_name, fishing_entity, tonnes 
-ORDER BY tonnes DESC;
-```
-
-2. **Vérifiez que la vue contient des données** en consultant l'onglet "Vues" dans l'interface Athena et en sélectionnant l'option "Aperçu de la vue" (Preview View).
-
-# Titre 1 : Placez l'image ici (Aperçu des données de maquereaux capturés).
-
-# Analyse des Données de la Vue
-
-1. **Requête pour voir le nombre total de tonnes de maquereaux capturées par année et par pays** :
-
-```sql
-SELECT year, Country, MAX(TotalWeight) AS Weight 
-FROM fishdb.mackerelscatch 
-GROUP BY year, Country 
-ORDER BY year, Weight DESC;
-```
-
-# Titre 1 : Placez l'image ici (Tableau final avec les noms des pays obscurcis).
-
-2. **Requête pour observer les captures de maquereaux par un pays spécifique, comme la Chine** :
-
-```sql
-SELECT * FROM "fishdb"."mackerelscatch" 
-WHERE Country = 'China';
-```
-
-# Titre 1 : Placez l'image ici (Données de la Chine).
-
----
-
-# Soumission de Votre Travail
-
-1. **Soumettre votre travail** en haut de cette page en cliquant sur le bouton **Soumettre**.
-2. Si les résultats ne s'affichent pas après quelques minutes, cliquez sur **Notes** pour voir combien de points vous avez obtenus pour chaque tâche.
-   
-# Conseils :
-- Vous pouvez soumettre votre travail plusieurs fois. Après chaque changement, cliquez sur **Soumettre** à nouveau pour enregistrer votre dernier état.
-- Pour obtenir des commentaires détaillés sur votre travail, cliquez sur **Rapport de soumission**.
-
-# Fin de la Session
-
-### Rappel :
-Cet environnement de laboratoire est persistant. Toutes les ressources que vous avez créées seront conservées jusqu'à ce que vous atteigniez la limite de votre budget ou la date de fin du cours.
-
-1. Lorsque vous avez terminé pour la journée, ou si vous avez fini d'activer l'environnement de laboratoire, cliquez sur **Terminer le Lab** en haut de la page. Confirmez en cliquant sur **Oui**.
-
-### Remarque :
-Terminer la session n'efface pas vos ressources. Elles seront toujours disponibles lors de votre prochaine session.
-
-
---------------------------
-
-# Réouverture de la Session et Reprise du Travail
-
-Lorsque vous êtes prêt à poursuivre votre travail sur ce projet Capstone, vous pouvez rouvrir la session de laboratoire et reprendre là où vous vous êtes arrêté.
-
-### Étapes pour reprendre la session :
-
-1. **Ouvrir la session de laboratoire** : En haut de cette page, cliquez sur **Démarrer le Lab**.
-   - Cela relancera la session et vous permettra de récupérer toutes les ressources que vous aviez créées lors de la session précédente.
-
-2. **Vérification des ressources AWS** : Une fois la session relancée, vous pourrez accéder à la console de gestion AWS en cliquant sur le lien AWS dans le coin supérieur gauche. Vous devriez voir tous vos buckets S3, vos bases de données AWS Glue, et les tables Athena déjà créées lors de vos précédentes étapes.
-
-3. **Vérifier l'environnement de développement** :
-   - Si vous travaillez dans AWS Cloud9, ouvrez votre environnement `CapstoneIDE` et vérifiez que les fichiers téléchargés, transformés et les scripts sont toujours présents.
-   - Assurez-vous que les fichiers CSV et Parquet sont bien stockés dans les buckets S3 correspondants.
-
-# Exploration Supplémentaire des Données
-
-Si vous avez terminé les tâches principales du projet, vous pouvez explorer davantage les données ou essayer de nouvelles analyses pour renforcer votre compréhension des services AWS et des processus de traitement de données.
-
-# Exemples de Requêtes Supplémentaires :
-
-1. **Analyser la capture de poissons par d'autres pays dans d'autres zones de haute mer** :
-   
-```sql
-SELECT year, fishing_entity AS Country, SUM(tonnes) AS TotalTonnes
-FROM fishdb.data_source_##### 
-WHERE area_name LIKE '%Pacific%' 
-GROUP BY year, fishing_entity 
-ORDER BY year DESC;
-```
-
-2. **Explorer l'évolution des captures sur une période spécifique** :
-   
-```sql
-SELECT year, fishing_entity AS Country, SUM(tonnes) AS TotalTonnes
-FROM fishdb.data_source_##### 
-WHERE year BETWEEN 1990 AND 2010 
-GROUP BY year, fishing_entity 
-ORDER BY TotalTonnes DESC;
-```
-
-3. **Calculer la valeur totale des captures pour une zone précise** :
-   
-```sql
-SELECT area_name, SUM(landed_value) AS TotalValue
-FROM fishdb.data_source_##### 
-GROUP BY area_name 
-ORDER BY TotalValue DESC;
-```
-
-Ces requêtes supplémentaires vous permettront de mieux comprendre les données et de tester la flexibilité de votre architecture pour gérer des ensembles de données complexes.
-
-# Défis Optionnels
-
-Pour aller encore plus loin et améliorer votre projet, vous pouvez essayer les défis suivants :
-
-1. **Ajouter de nouvelles zones de pêche** : Téléchargez d'autres fichiers de données depuis *The Sea Around Us* et intégrez-les dans votre système AWS. Transformez ces fichiers au format Parquet, mettez à jour les métadonnées avec AWS Glue et exécutez des analyses supplémentaires dans Athena.
-
-2. **Automatisation avec AWS Lambda** : Configurez une fonction AWS Lambda pour automatiser le processus de transformation des fichiers CSV en Parquet et leur téléchargement dans S3.
-
-3. **Visualisation des données** : Connectez Amazon QuickSight à Athena pour visualiser les résultats des requêtes de manière graphique. Vous pouvez créer des tableaux de bord interactifs pour mieux comprendre les tendances des captures de poissons et les visualiser avec des graphiques.
-
-# Conclusion du Projet
-
-Une fois que vous avez terminé toutes les étapes du projet et exploré les données, vous aurez acquis une solide compréhension de l'utilisation des services AWS pour gérer des données massives, les transformer et en extraire des informations précieuses. Vous aurez appris à utiliser AWS Cloud9, S3, Glue, Athena, et éventuellement d'autres services comme QuickSight pour analyser et visualiser des ensembles de données complexes.
-
-# Étapes finales :
-
-- **Sauvegarder votre travail** : Assurez-vous que toutes vos ressources sont correctement configurées et que vos analyses sont complètes.
-- **Soumettre votre travail** : Si vous participez à un cours ou à un programme de certification, soumettez votre projet en suivant les instructions données précédemment dans la section *Soumettre votre travail*.
-  
-# Fin du Projet Capstone
-
-Félicitations pour avoir complété ce projet Capstone en ingénierie des données ! Vous avez démontré votre capacité à utiliser plusieurs services AWS pour gérer et analyser de grandes quantités de données. Continuez à explorer les différentes possibilités qu'offrent les outils AWS pour enrichir vos compétences en ingénierie des données et en analyse.
-
-- Ce guide détaillé vous a accompagné à travers chaque étape du projet Capstone, du lancement de l'environnement de développement à l'analyse des données dans Athena, en passant par la transformation de fichiers et la création de vues. 
-- Vous pouvez maintenant appliquer ces compétences à des projets plus complexes, dans un environnement professionnel réel.
