@@ -1,3 +1,6 @@
+# 💡 Guide de Fonctionnement d'un Pipeline de Données en Streaming avec AWS  
+# 🔄 Pipeline de Données en Streaming AWS : Kinesis Data Streams, Firehose, Lambda, et OpenSearch
+
 ----------------------
 # 💡 Question à laquelle ce document répond :
 ----------------------
