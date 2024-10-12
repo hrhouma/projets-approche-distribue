@@ -1,4 +1,30 @@
-# Partie 3 - Rapport avec des imprimes écrans des étapes à remettre avant le *20 Octobre 2024*
+# Partie 3 - Rapport avec des imprimes écrans des étapes à remettre avant le *20 Octobre 2024* à minuit
+
+
+# **Instructions pour le rapport :**
+
+Vous devez me remettre un **rapport détaillé** contenant des **captures d'écran de chaque étape** que vous avez suivie dans le lab. Le rapport peut être présenté sous forme de **document WORD, PDF** ou de **présentation PowerPoint (PPT)**.
+
+# **Ce que vous devez inclure :**
+- Assurez-vous de capturer **chaque étape** clé que vous avez réalisée tout au long du projet.
+- Le rapport doit contenir vos **conclusions** ainsi que des **captures d'écran** pour illustrer les différentes étapes du lab.
+- Les réponses aux questions suivantes :
+
+# **Questions**
+
+1. **Quel est le rôle d'AWS Glue dans le traitement des données avant de les interroger avec Athena ?**
+
+2. **Pourquoi est-il nécessaire de transformer les fichiers CSV en format Parquet avant de les stocker dans Amazon S3 pour les analyser avec Athena ?**
+
+3. **Quelle est l'importance de créer une vue dans Athena avant d'exécuter certaines requêtes sur un grand ensemble de données, et comment cela optimise-t-il les performances des requêtes ?**
+
+
+
+# **Date limite de remise :**
+Le **20 octobre 2024 à minuit**.
+
+
+
 ---------------------------
 # Projet Capstone 
 ---------------------------
