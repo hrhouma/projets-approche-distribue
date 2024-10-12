@@ -240,7 +240,7 @@ Parmi les colonnes supplémentaires du jeu de données **HighSeas**, deux sont p
 
    **Remarque :** La requête exemple renvoie deux résultats. Pour cette colonne, chaque ligne du jeu de données contient soit la valeur "Pacific, Western Central" (pour les lignes issues de **SAU-HighSeas-71-v48-0.parquet**), soit une valeur nulle (pour les lignes issues de **SAU-GLOBAL-1-v48-0.parquet**).
 
----
+
 
 6. Maintenant que votre table de données est définie, exécutez des requêtes pour confirmer qu'elle fournit des résultats utiles.
 
@@ -267,6 +267,198 @@ Parmi les colonnes supplémentaires du jeu de données **HighSeas**, deux sont p
 
    - Choisissez **Create > View from query**.
    - Nommez la vue **challenge**.
+
+
+
+
+
+
+
+
+
+
+
+
+# Tâche 3 : Transformer un nouveau fichier et l'ajouter à l'ensemble de données
+
+Dans cette partie du projet de fin de parcours, vous allez ajouter le fichier de données **SAU-EEZ-242-v48-0.csv** à votre ensemble de données dans Amazon S3.
+
+Ce fichier comporte quelques noms de colonnes qui ne correspondent pas aux données que vous avez déjà ajoutées à votre bucket S3. Cependant, les données de ces colonnes sont alignées avec les données existantes. Vous devrez modifier les noms de colonnes avant d'ajouter les données à votre bucket.
+
+1. Analysez la structure des données du fichier **SAU-EEZ-242-v48-0.csv**. Comparez les colonnes qu'il contient avec les colonnes des autres fichiers de données.
+
+   Utilisez la même technique que celle utilisée précédemment dans le lab pour découvrir les noms de colonnes du fichier **EEZ**.
+
+   **Astuce :** La plupart des noms de colonnes correspondent entre les trois fichiers. Cependant, deux des noms de colonnes dans le fichier **EEZ** ne correspondent pas exactement. Le tableau suivant montre les colonnes contenues dans chaque fichier.
+
+![image](https://github.com/user-attachments/assets/a1c4d607-e940-441a-ae43-26dd78be07da)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Analyse :
+
+Les données de la colonne **fish_name** doivent être fusionnées avec les données de la colonne **common_name** du jeu de données **HighSeas**. De même, les données de la colonne **country** doivent être fusionnées avec les données de la colonne **fishing_entity** du jeu de données **HighSeas**.
+
+---
+
+1. Utilisez la bibliothèque Python d'analyse de données, appelée **pandas**, pour corriger les noms de colonnes. De plus, convertissez le fichier **EEZ** au format Parquet.
+
+   Pour accomplir ces tâches, exécutez toutes les commandes du bloc de code suivant. Cependant, avant d'exécuter la commande `df.rename`, remplacez les espaces réservés **<FMI_#>** par les valeurs correctes.
+
+   **Astuces :**
+   - Par exemple, **<FMI_1>** doit être défini sur l'un des noms de colonnes que vous souhaitez changer et **<FMI_2>** doit être défini sur ce que vous souhaitez qu'il devienne.
+   - Il sera plus facile de lire la sortie des lignes `print` si vous élargissez au maximum la fenêtre de votre navigateur.
+
+   ```bash
+   # Faites une copie de sauvegarde du fichier avant de le modifier sur place
+   cp SAU-EEZ-242-v48-0.csv SAU-EEZ-242-v48-0-old.csv
+
+   # Démarrez l'interpréteur Python interactif
+   python3
+
+   import pandas as pd
+
+   # Chargez la version de sauvegarde du fichier
+   data_location = 'SAU-EEZ-242-v48-0-old.csv'
+
+   # Utilisez Pandas pour lire le fichier CSV dans un dataframe
+   df = pd.read_csv(data_location)
+
+   # Affichez les noms de colonnes actuels
+   print(df.head(1))
+
+   # Changez les noms des colonnes 'fish_name' et 'country' pour correspondre aux noms de colonnes dans les autres fichiers de données déjà dans votre bucket data-source
+   df.rename(columns={"<FMI_1>": "<FMI_2>", "<FMI_3>": "<FMI_4>"}, inplace=True)
+
+   # Vérifiez que les noms de colonnes ont été modifiés
+   print(df.head(1))
+
+   # Écrivez les modifications sur le disque
+   df.to_csv('SAU-EEZ-242-v48-0.csv', header=True, index=False)
+   df.to_parquet('SAU-EEZ-242-v48-0.parquet')
+
+   exit()
+   ```
+
+2. Téléchargez le nouveau fichier de données **EEZ** dans le bucket **data-source**.
+
+3. Pour mettre à jour les métadonnées de la table avec les colonnes supplémentaires qui font maintenant partie de votre ensemble de données, exécutez à nouveau le robot d'exploration AWS Glue.
+
+4. Exécutez quelques requêtes dans Athena.
+
+   **Remarque :** Pour toutes ces requêtes, remplacez **data_source_#####** par le nom de votre table **data_source**.
+
+   - Pour vérifier les valeurs dans la colonne **area_name**, comme vous l'avez fait précédemment, utilisez la requête suivante :
+
+   ```sql
+   SELECT DISTINCT area_name FROM fishdb.data_source_#####;
+   ```
+
+   Avec l'ajout du fichier **EEZ** à l'ensemble de données, cette requête renvoie maintenant trois résultats, y compris le résultat pour les lignes où la colonne **area_name** ne contient aucune donnée. (Rappelez-vous que cette requête renvoyait seulement deux résultats auparavant.)
+
+   - Pour trouver la valeur en dollars US de tous les poissons capturés par Fidji dans les eaux internationales depuis 2001, organisés par année, utilisez la requête suivante :
+
+   ```sql
+   SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValueOpenSeasCatch 
+   FROM fishdb.data_source_#####
+   WHERE area_name IS NULL AND fishing_entity='Fiji' AND year > 2000
+   GROUP BY year, fishing_entity
+   ORDER BY year;
+   ```
+
+   - Pour trouver la valeur en dollars US de tous les poissons capturés par Fidji dans la ZEE de Fidji depuis 2001, organisés par année, utilisez la requête suivante :
+
+   ```sql
+   SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValueEEZCatch
+   FROM fishdb.data_source_#####
+   WHERE area_name LIKE '%Fiji%' AND fishing_entity='Fiji' AND year > 2000
+   GROUP BY year, fishing_entity
+   ORDER BY year;
+   ```
+
+   - Pour trouver la valeur en dollars US de tous les poissons capturés par Fidji, que ce soit dans la ZEE de Fidji ou en haute mer, depuis 2001, organisés par année, utilisez la requête suivante :
+
+   ```sql
+   SELECT year, fishing_entity AS Country, CAST(CAST(SUM(landed_value) AS DOUBLE) AS DECIMAL(38,2)) AS ValueEEZAndOpenSeasCatch 
+   FROM fishdb.data_source_#####
+   WHERE (area_name LIKE '%Fiji%' OR area_name IS NULL) AND fishing_entity='Fiji' AND year > 2000
+   GROUP BY year, fishing_entity
+   ORDER BY year;
+   ```
+
+   **Analyse :** Si vos données sont bien formatées et que le robot d'exploration AWS Glue a correctement mis à jour la table de métadonnées, alors les résultats que vous obtenez des deux premières requêtes de cette étape devraient s'additionner aux résultats que vous obtenez de la troisième requête.
+
+   Par exemple, si vous additionnez la valeur **ValueOpenSeasCatch** de 2001 et la valeur **ValueEEZCatch** de 2001, le total devrait être égal à la valeur **ValueEEZAndOpenSeasCatch** de 2001. Si vos résultats sont cohérents avec cette description, cela indique que votre solution fonctionne comme prévu.
+
+---
+
+5. Créez une vue dans Athena, qui sera utile pour examiner les données dans la prochaine section de ce projet de fin de parcours.
+
+   Exécutez la requête suivante. Remplacez **data_source_#####** par le nom de votre table **data_source** :
+
+   ```sql
+   CREATE OR REPLACE VIEW MackerelsCatch AS
+   SELECT year, area_name AS WhereCaught, fishing_entity AS Country, SUM(tonnes) AS TotalWeight
+   FROM fishdb.data_source_#####
+   WHERE common_name LIKE '%Mackerels%' AND year > 2014
+   GROUP BY year, area_name, fishing_entity, tonnes
+   ORDER BY tonnes DESC;
+   ```
+
+   - Pour vérifier que la vue contient des données, dans le panneau **Data**, sous **Views**, choisissez l'icône avec trois points à droite de la vue **mackerelscatch**, puis choisissez **Preview View**. Vous devriez voir une sortie similaire à l'exemple suivant.
+
+
+![image](https://github.com/user-attachments/assets/c1ba626e-c787-4b88-b6da-792a464f555f)
+
+
+
+
+Ensuite, vous exécuterez quelques requêtes sur la vue Athena pour analyser les données.
+
+1. Pour voir les données suivantes : **Tonnes de maquereaux capturés par année et par pays**.
+
+   - Retournez dans l'éditeur de requêtes Athena et exécutez la requête SQL suivante pour identifier les pays ayant capturé le plus de maquereaux chaque année.
+
+   ```sql
+   SELECT year, Country, MAX(TotalWeight) AS Weight
+   FROM fishdb.mackerelscatch 
+   GROUP BY year, Country
+   ORDER BY year, Weight DESC;
+   ```
+
+   Vous devriez voir une sortie similaire à ce qui suit.
+
+
+![image](https://github.com/user-attachments/assets/7f75bf7e-2b96-4876-94fd-b54d53cbcc31)
+
+
+
+Pour afficher les captures de maquereaux (**MackerelsCatch**) pour un pays particulier, par exemple la Chine, exécutez la requête suivante.
+
+```sql
+SELECT * FROM "fishdb"."mackerelscatch" 
+WHERE country IN ('China');
+```
+
+
+
 
 
 
