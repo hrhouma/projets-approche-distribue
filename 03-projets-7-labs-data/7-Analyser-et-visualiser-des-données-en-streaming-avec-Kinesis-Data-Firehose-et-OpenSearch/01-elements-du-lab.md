@@ -392,7 +392,8 @@ DELETE /apache_logs
 
 ![image](https://github.com/user-attachments/assets/24a41d6b-6e16-40ab-9fac-c47ab6ac2d9f)
 
-    - La réponse suivante s'affiche :
+
+- La réponse suivante s'affiche :
 
 ```json
       {
