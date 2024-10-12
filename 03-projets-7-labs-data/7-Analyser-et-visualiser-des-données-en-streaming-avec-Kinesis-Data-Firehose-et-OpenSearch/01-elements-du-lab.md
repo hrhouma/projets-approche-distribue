@@ -305,9 +305,9 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
 
 
 
-      ```sql
-      DELETE /apache_logs
-      ```
+```sql
+DELETE /apache_logs
+```
 
       - Cette commande supprime l'index **apache_logs**, s'il existe déjà, qui est stocké sur l'instance EC2 OpenSearch Service.
     
@@ -315,11 +315,11 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
 
     - La réponse suivante s'affiche :
 
-      ```json
+```json
       {
         "acknowledged": true
       }
-      ```
+```
 
 3. **Création d'un index OpenSearch à l'aide de l'API REST.**
 
@@ -327,7 +327,7 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
 
     - Copiez et collez le texte suivant dans la console :
 
-      ```json
+  ```json
       PUT apache_logs
       {
           "settings" : {
@@ -383,7 +383,7 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
               }
           }
       }
-      ```
+  ```
 
     - **Remarque** : Copiez la commande exactement comme elle est écrite, sinon vous risquez de recevoir des erreurs lors de son exécution. Vous devriez voir le texte exact montré dans l'image suivante.
 
@@ -395,13 +395,13 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
 
     - La réponse suivante s'affiche :
 
-      ```json
+  ```json
       {
         "acknowledged": true,
         "shards_acknowledged": true,
         "index": "apache_logs"
       }
-      ```
+  ```
 
 ### **Analyse :**
 Cette commande a créé un nouvel index appelé **apache_logs**. Lorsque les journaux d'accès du serveur web seront mis à jour en raison du trafic sur le site, le flux de livraison **Kinesis Data Firehose** remplira le cluster **OpenSearch Service** avec des données en fonction des mappages dans la commande. La commande définit les types de données pour les champs dans les fichiers journaux du serveur au sein de la base de données OpenSearch Service. Maintenant que vous avez un index, vous pouvez générer des journaux d'accès web et créer des visualisations basées sur les données de cet index.
@@ -420,9 +420,9 @@ Pour commencer le processus de test, vous devez d'abord générer des journaux s
 
 1. **Ouvrez un nouvel onglet ou une nouvelle fenêtre de votre navigateur** et accédez à l'URL suivante. Remplacez `<PUBLIC-IP>` par l'adresse IP publique que vous avez copiée précédemment :
 
-    ```
+```json
     http://<PUBLIC-IP>/main.php
-    ```
+```
 
 2. **Générez des journaux du serveur web en utilisant plusieurs navigateurs web.**
 
@@ -474,7 +474,7 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
 
     - Les détails de l'événement sont similaires aux suivants :
 
-      ```json
+```json
       Incoming Record from Kinesis Firehose : 
       {
           "host": "68.206.xxx.xxx",
@@ -487,7 +487,7 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
           "referer": "http://18.207.217.39/recommendation.php",
           "agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"
       }
-      ```
+```
 
     - **Analyse** : Cet événement dans **CloudWatch Logs** a été généré lorsque le journal d'accès du serveur web a été envoyé depuis l'instance EC2 et ingéré dans Kinesis Data Firehose. Après ingestion, les données des journaux d'accès sont transmises à Lambda, où une fonction transforme et enrichit les données.
 
@@ -495,7 +495,7 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
 
     - Les détails de l'événement sont similaires aux suivants :
 
-      ```json
+```json
       Transformed Record going back to Kinesis Firehose : 
       {
           "host": "68.206.xxx.xxx",
@@ -518,7 +518,7 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
               "lon": -97.444
           }
       }
-      ```
+```
 
     - **Analyse** : Remarquez comment les données sont transformées avec des champs supplémentaires et enrichies avec la localisation du visiteur du site (en utilisant l'adresse IP du visiteur).
 
@@ -526,9 +526,9 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
 
     - Les détails de l'événement sont similaires aux suivants :
 
-      ```text
+```text
       REPORT RequestId: d0ad7487-bcce-4881-a030-6dea03c100bd  Duration: 473.96 ms Billed Duration: 474 ms Memory Size: 128 MB Max Memory Used: 51 MB  Init Duration: 454.88 ms
-      ```
+```
 
     - **Analyse** : Cet événement apparaît périodiquement dans le flux de journaux et inclut des informations d'utilisation pour Kinesis Data Firehose et Lambda. Par exemple, la **Billed Duration** (Durée facturée) est le temps qu'il faut à Lambda pour traiter un groupe de journaux d'accès web et les enrichir. Avec Kinesis Data Firehose et Lambda, les clients AWS sont facturés pour ce qu'ils utilisent.
 
