@@ -1,3 +1,4 @@
+# Partie 3 - Rapport avec des imprimes écrans des étapes à remettre avant le *20 Octobre 2024*
 ---------------------------
 # Projet Capstone 
 ---------------------------
