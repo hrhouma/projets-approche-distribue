@@ -1,12 +1,4 @@
-
-
-# Sep
-
-Voici la traduction en français, avec un maximum de détails, de votre texte sur l'analyse et la visualisation de données de streaming avec Kinesis Data Firehose, OpenSearch Service et OpenSearch Dashboards.
-
----
-
-### **Aperçu du laboratoire et objectifs**
+# **Aperçu du laboratoire et objectifs**
 
 Les problèmes liés aux mégadonnées nécessitent souvent des solutions en temps réel. Cela correspond à la partie « vélocité » des cinq V des mégadonnées (volume, variété, vélocité, véracité et valeur). Les sources de données courantes pour ces scénarios incluent les flux vidéo, les journaux d'application et les dispositifs d'infrastructure. Les données dans ces scénarios de vélocité sont appelées données de streaming. Amazon Kinesis est une suite de services que vous pouvez utiliser pour analyser des données de streaming.
 
@@ -23,15 +15,15 @@ Après avoir terminé ce laboratoire, vous devriez être en mesure de :
   - Créer un graphique circulaire (camembert) illustrant les systèmes d'exploitation et les navigateurs utilisés par les visiteurs pour consulter le site web.
   - Créer une carte thermique (heat map) illustrant comment les utilisateurs sont redirigés vers les pages produits (via la page de recherche ou la page de recommandations).
 
-### **Durée**
+# **Durée**
 
 Ce laboratoire nécessitera environ 90 minutes pour être complété.
 
-### **Restrictions sur les services AWS**
+# **Restrictions sur les services AWS**
 
 Dans cet environnement de laboratoire, l'accès aux services et aux actions des services AWS peut être limité à ceux nécessaires pour accomplir les instructions du laboratoire. Vous pourriez rencontrer des erreurs si vous tentez d'accéder à d'autres services ou d'effectuer des actions en dehors de celles décrites dans ce laboratoire.
 
-### **Scénario**
+# **Scénario**
 
 L'administrateur du site web de la librairie universitaire souhaite obtenir des informations sur la manière dont les visiteurs interagissent avec le site. Elle utilisait un système de suivi basé sur JavaScript pour afficher des graphiques contenant des informations sur l'activité des utilisateurs. Ces informations incluent l'emplacement des utilisateurs, les navigateurs qu'ils utilisent et s'ils accèdent au site via des appareils mobiles. Les données peuvent également indiquer si les visiteurs atteignent la page produit d'une librairie via une page de recherche ou une page de recommandations.
 
@@ -45,13 +37,7 @@ La solution utilise **Kinesis Data Firehose** pour ingérer les journaux d'accè
 
 Lorsque vous commencez le laboratoire, l'environnement contiendra les ressources représentées dans le schéma suivant.
 
----
-
-J'espère que cette traduction détaillée vous convient ! N'hésitez pas à demander des clarifications ou des modifications si nécessaire.
-
-# Sep
-
-Voici la traduction détaillée en français de cette partie concernant l'infrastructure conçue pour analyser les données de streaming.
+![image](https://github.com/user-attachments/assets/0a45b8a8-be38-4577-a997-73e2cb6bf580)
 
 ---
 
@@ -83,14 +69,8 @@ Voici la traduction détaillée en français de cette partie concernant l'infras
 
 ### **À la fin du laboratoire, vous aurez utilisé cette architecture pour effectuer plusieurs tâches. Le tableau après le schéma fournit une explication détaillée de ces tâches en relation avec l'architecture du laboratoire.**
 
----
+![image](https://github.com/user-attachments/assets/344c5510-8de4-4ff3-ae46-2425257793d7)
 
-J'espère que cette traduction répond à vos attentes ! N'hésitez pas à me demander d'autres clarifications ou de l'aide pour d'autres parties.
-
-
-# Sep
-
-Voici la traduction détaillée en français de cette partie sur les tâches numérotées et l'accès à la console de gestion AWS :
 
 ---
 
@@ -124,17 +104,6 @@ Voici la traduction détaillée en français de cette partie sur les tâches num
     - Un nouvel onglet du navigateur s'ouvre et vous connecte à la console.
     - **Conseil** : Si un nouvel onglet du navigateur ne s'ouvre pas, une bannière ou une icône se trouve généralement en haut de votre navigateur avec le message indiquant que votre navigateur empêche le site d'ouvrir des fenêtres contextuelles. Choisissez la bannière ou l'icône, puis choisissez « **Autoriser les fenêtres contextuelles** ».
 
----
-
-J'espère que cette traduction correspond à vos attentes ! N'hésitez pas à demander si vous avez besoin de plus de détails ou d'aide supplémentaire.
-
-
-
-# Sep
-
-
-# Sep
-Voici la traduction détaillée en français de la partie concernant la révision de l'instance EC2 et de sa configuration de sécurité :
 
 ---
 
@@ -184,13 +153,6 @@ Commencez par examiner la configuration de l'instance EC2 pour le serveur web.
 
 **Excellent !** Dans cette tâche, vous avez révisé l'instance EC2 et examiné comment elle est sécurisée.
 
----
-
-J'espère que cette traduction est conforme à vos attentes ! Si vous avez besoin d'autres précisions ou d'aide pour la suite, n'hésitez pas à me le dire.
-
-# Sep
-
-Voici la traduction détaillée en français de la partie concernant la révision du flux de livraison Kinesis Data Firehose.
 
 ---
 
