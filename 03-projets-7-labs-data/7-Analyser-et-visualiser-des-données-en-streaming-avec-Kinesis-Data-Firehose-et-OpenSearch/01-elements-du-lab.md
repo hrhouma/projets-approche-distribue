@@ -489,7 +489,8 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
       }
 ```
 
-    - **Analyse** : Cet événement dans **CloudWatch Logs** a été généré lorsque le journal d'accès du serveur web a été envoyé depuis l'instance EC2 et ingéré dans Kinesis Data Firehose. Après ingestion, les données des journaux d'accès sont transmises à Lambda, où une fonction transforme et enrichit les données.
+
+- **Analyse** : Cet événement dans **CloudWatch Logs** a été généré lorsque le journal d'accès du serveur web a été envoyé depuis l'instance EC2 et ingéré dans Kinesis Data Firehose. Après ingestion, les données des journaux d'accès sont transmises à Lambda, où une fonction transforme et enrichit les données.
 
 3. **Développez l'un des journaux contenant un message qui commence par** **Transformed Record going back to Kinesis Firehose**.
 
@@ -520,17 +521,21 @@ Dans cette tâche, vous allez examiner les informations des journaux CloudWatch 
       }
 ```
 
-    - **Analyse** : Remarquez comment les données sont transformées avec des champs supplémentaires et enrichies avec la localisation du visiteur du site (en utilisant l'adresse IP du visiteur).
+
+- **Analyse** : Remarquez comment les données sont transformées avec des champs supplémentaires et enrichies avec la localisation du visiteur du site (en utilisant l'adresse IP du visiteur).
+  
 
 4. **Développez l'un des journaux contenant un message qui commence par** **REPORT RequestId**.
 
     - Les détails de l'événement sont similaires aux suivants :
 
+
 ```text
       REPORT RequestId: d0ad7487-bcce-4881-a030-6dea03c100bd  Duration: 473.96 ms Billed Duration: 474 ms Memory Size: 128 MB Max Memory Used: 51 MB  Init Duration: 454.88 ms
 ```
 
-    - **Analyse** : Cet événement apparaît périodiquement dans le flux de journaux et inclut des informations d'utilisation pour Kinesis Data Firehose et Lambda. Par exemple, la **Billed Duration** (Durée facturée) est le temps qu'il faut à Lambda pour traiter un groupe de journaux d'accès web et les enrichir. Avec Kinesis Data Firehose et Lambda, les clients AWS sont facturés pour ce qu'ils utilisent.
+
+- **Analyse** : Cet événement apparaît périodiquement dans le flux de journaux et inclut des informations d'utilisation pour Kinesis Data Firehose et Lambda. Par exemple, la **Billed Duration** (Durée facturée) est le temps qu'il faut à Lambda pour traiter un groupe de journaux d'accès web et les enrichir. Avec Kinesis Data Firehose et Lambda, les clients AWS sont facturés pour ce qu'ils utilisent.
 
 ![image](https://github.com/user-attachments/assets/749002f4-4705-4188-b310-f9a0d94ef147)
 
