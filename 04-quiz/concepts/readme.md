@@ -22,10 +22,10 @@ Bienvenue dans le dépôt de documentation sur AWS et OpenSearch. Ce projet couv
 16. [Comparaison entre Apache Kafka et Apache Pulsar](./16-Comparaison%cC%B7A7tC3A9ntrc3A9ePulsar.md)
 17. [Sécuriser vos Données en Transit et au Repos](./17-Sécuriser%20vos%20Données%20en%20Transit%20et%20au%20Repos.md)
 
-## Contribution
+# Contribution
 
 Les contributions sont les bienvenues ! Veuillez soumettre un pull request ou ouvrir une issue pour toute suggestion ou correction.
 
-## Licence
+# Licence
 
 Ce projet est sous licence MIT.
