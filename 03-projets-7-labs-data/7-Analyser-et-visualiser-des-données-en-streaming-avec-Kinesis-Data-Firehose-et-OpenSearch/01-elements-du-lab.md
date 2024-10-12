@@ -384,7 +384,7 @@ DELETE /apache_logs
       }
 ```
 
-    - **Remarque** : Copiez la commande exactement comme elle est écrite, sinon vous risquez de recevoir des erreurs lors de son exécution. Vous devriez voir le texte exact montré dans l'image suivante.
+- **Remarque** : Copiez la commande exactement comme elle est écrite, sinon vous risquez de recevoir des erreurs lors de son exécution. Vous devriez voir le texte exact montré dans l'image suivante.
 
 4. **Exécution de la commande.**
 
