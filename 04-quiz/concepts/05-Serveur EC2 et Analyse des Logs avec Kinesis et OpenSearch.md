@@ -1,3 +1,6 @@
+# 💡 Rôle du Serveur EC2 dans une Architecture AWS de Traitement des Logs  
+# 🌐 Serveur EC2 et Analyse des Logs avec Kinesis et OpenSearch
+
 ----------------------
 # 💡 Question à laquelle le tutoriel répond :
 ----------------------
