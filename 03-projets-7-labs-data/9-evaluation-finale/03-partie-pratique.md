@@ -1,4 +1,6 @@
-# Académie : Projet Capstone en Ingénierie des Données
+---------------------------------------------------
+# Projet Capstone en Ingénierie des Données
+---------------------------------------------------
 
 # Aperçu et Objectifs
 
