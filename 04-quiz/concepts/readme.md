@@ -4,7 +4,6 @@ Bienvenue dans le dépôt de documentation sur AWS et OpenSearch. Ce projet couv
 
 
 
-```markdown
 # Table des Matières
 
 - [Kinesis Firehose vs Kinesis Streams : Quand et Comment les Utiliser](./01-Kinesis%20Firehose%20vs%20Kinesis%20Streams%20:%20Quand%20et%20Comment%20les%20Utiliser.md)
@@ -25,7 +24,6 @@ Bienvenue dans le dépôt de documentation sur AWS et OpenSearch. Ce projet couv
 - [Comparaison entre Apache Kafka et Apache Pulsar](./16-Comparaison%cC%B7A7tC3A9ntrc3A9ePulsar.md)
 - [Sécuriser vos Données en Transit et au Repos](./17-Sécuriser vos Données en Transit et au Repos.md)
 
-```
 
 
 
