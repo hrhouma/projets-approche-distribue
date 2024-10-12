@@ -307,13 +307,12 @@ Dans OpenSearch, l'unité de base de données est un document JSON. Au sein d'un
 
 ```sql
 DELETE /apache_logs
+
 ```
 
-      - Cette commande supprime l'index **apache_logs**, s'il existe déjà, qui est stocké sur l'instance EC2 OpenSearch Service.
-    
-    - Pour exécuter la commande, choisissez l'icône de flèche bleue.
-
-    - La réponse suivante s'affiche :
+- Cette commande supprime l'index **apache_logs**, s'il existe déjà, qui est stocké sur l'instance EC2 OpenSearch Service.
+- Pour exécuter la commande, choisissez l'icône de flèche bleue.
+- La réponse suivante s'affiche :
 
 ```json
       {
