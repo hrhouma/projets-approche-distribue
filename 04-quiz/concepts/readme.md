@@ -2,7 +2,7 @@
 
 Bienvenue dans le dépôt de documentation sur AWS et OpenSearch. Ce projet couvre divers aspects de l'utilisation d'AWS Kinesis, OpenSearch, et d'autres technologies associées pour la gestion et l'analyse des données en streaming.
 
-## Table des Matières
+# Table des Matières
 
 1. [Kinesis Firehose vs Kinesis Streams : Quand et Comment les Utiliser](./01-Kinesis%20Firehose%20vs%20Kinesis%20Streams%20:%20Quand%20et%20Comment%20les%20Utiliser.md)
 2. [Gestion de l'Encryption dans Kinesis Data Firehose](./02-Gestion%20de%20l'Encryption%20dans%20Kinesis%20Data%20Firehose.md)
