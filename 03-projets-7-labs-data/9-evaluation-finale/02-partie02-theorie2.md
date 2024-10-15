@@ -16,7 +16,7 @@
 ### Pipeline 3
 ![pipeline3](https://github.com/user-attachments/assets/f82ef59e-a43a-4e2f-849a-f2c0eda01016)
 
-1. **Description détaillée de chaque pipeline** : Décrivez les différentes étapes du traitement des données dans chaque pipeline, depuis l'ingestion jusqu'à la visualisation ou l'analyse des données.
+1. **Description de chaque pipeline** : Décrivez les différentes étapes du traitement des données dans chaque pipeline, depuis l'ingestion jusqu'à la visualisation ou l'analyse des données.
    
 2. **Comparaison** : Identifiez les similitudes et les différences entre ces pipelines en termes de :
    - Acquisition des données
