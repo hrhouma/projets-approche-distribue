@@ -149,9 +149,7 @@ Une entreprise de transport souhaite surveiller en temps réel les **flux de don
 ---
 
 ### **Question 17.**  
-Une institution gouvernementale veut analyser les **logs des applications** de manière centralisée pour améliorer la gestion des incidents. Ces logs sont collectés en temps quasi réel et doivent être **stockés et indexés** dans une base de
-
- données pour faciliter la recherche par mots-clés en cas de problème. Ils recherchent une solution qui regroupe ces logs en lot et les envoie vers un moteur de recherche sans gestion manuelle. Quel(s) service(s) recommanderiez-vous ?  
+Une institution gouvernementale veut analyser les **logs des applications** de manière centralisée pour améliorer la gestion des incidents. Ces logs sont collectés en temps quasi réel et doivent être **stockés et indexés** dans une base de données pour faciliter la recherche par mots-clés en cas de problème. Ils recherchent une solution qui regroupe ces logs en lot et les envoie vers un moteur de recherche sans gestion manuelle. Quel(s) service(s) recommanderiez-vous ?  
 - A. AWS Glue  
 - B. Kinesis Data Streams  
 - C. Kinesis Data Firehose  
