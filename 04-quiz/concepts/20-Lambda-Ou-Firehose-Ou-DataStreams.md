@@ -79,3 +79,31 @@ Kinesis Data Streams est un service de streaming de données hautement personnal
 - **Opter pour Data Streams pour la flexibilité** : Lorsque vous avez besoin d'un contrôle total sur le flux de données, de la gestion des consommateurs multiples et des transformations avancées, Kinesis Data Streams est le choix approprié.
 
 En résumé, le choix entre AWS Lambda, Kinesis Firehose et Kinesis Data Streams dépend de la complexité de vos besoins en traitement de données, du niveau de contrôle requis, et de la simplicité de gestion souhaitée. Évaluer ces facteurs vous aidera à concevoir un pipeline de données efficace et adapté à vos exigences spécifiques.
+
+
+# Annexe : Table comparative détaillée entre **AWS Lambda**, **Kinesis Firehose**, et **Kinesis Data Streams** :
+
+| Critère / Service            | **AWS Lambda**                                     | **Kinesis Firehose**                                | **Kinesis Data Streams**                           |
+|------------------------------|----------------------------------------------------|-----------------------------------------------------|----------------------------------------------------|
+| **Type de service**           | Service de calcul sans serveur                     | Service de livraison de données en streaming         | Service de streaming de données en temps réel      |
+| **Cas d'usage principal**     | Exécuter du code en réponse à des événements       | Livraison de données en streaming vers des destinations (S3, Redshift, etc.) | Collecte et traitement en continu de données en temps réel |
+| **Capacité de traitement**    | **Transformations légères** : Nettoyage, validation, enrichissement de données | **Ingestion continue** : Capture et transformation basique des données en continu | **Traitement personnalisé** : Permet des transformations complexes en continu |
+| **Transformation des données**| Effectue des transformations à la demande sur les événements | Utilise Lambda pour des transformations simples pendant la livraison | Requiert un traitement externe (ex. Lambda, Kinesis Data Analytics, EMR) pour des transformations avancées |
+| **Scalabilité**               | Automatique : Lambda gère les ressources en fonction de la charge | Automatique : Firehose ajuste automatiquement le débit des données | Manuelle : Gestion des shards pour adapter le débit à la charge |
+| **Multiples consommateurs**   | Pas d'accès direct à la donnée, déclenchement unique pour chaque événement | Pas de support pour plusieurs consommateurs | Supporte plusieurs applications ou services consommant les mêmes données simultanément |
+| **Destination des données**   | Exécution du code, résultat traité selon l'événement (stockage, base de données, etc.) | **Amazon S3**, **Amazon Redshift**, **Elasticsearch**, **Splunk** | Aucune destination prédéfinie, la sortie est gérée par les consommateurs du flux |
+| **Coût**                      | Basé sur le nombre d'exécutions et la durée des fonctions Lambda | Basé sur le volume de données ingérées et les transformations effectuées | Basé sur le nombre de shards et le débit traité dans les flux de données |
+| **Gestion de l'infrastructure**| Aucune, entièrement géré par AWS                  | Aucune, entièrement géré par AWS                     | Requiert une gestion manuelle des shards pour équilibrer la charge |
+| **Latence**                   | Latence très faible pour des exécutions à la demande | Faible latence, la livraison est quasi instantanée | Latence très faible, permet de traiter des flux en quasi temps réel |
+| **Scénarios adaptés**         | Traitement d'événements déclenchés par d'autres services AWS (S3, DynamoDB, etc.), validation de données | Livraison continue de logs, clics web, ou transactions vers des destinations analytiques | Analyse de flux de données complexes en temps réel, traitement de gros volumes de données, support multi-consommateurs |
+| **Complexité de mise en œuvre**| Faible : Facile à configurer, aucune gestion des ressources requise | Faible : Configuration simple, aucune gestion des shards | Élevée : Nécessite la gestion manuelle des shards et des consommateurs |
+
+### **Résumé des usages spécifiques :**
+
+- **AWS Lambda** : Idéal pour le traitement réactif et léger, lorsque vous avez besoin d'exécuter du code en réponse à des événements spécifiques. Il convient aux transformations en temps réel sur des volumes modérés de données ou à des tâches de traitement ponctuelles.
+  
+- **Kinesis Firehose** : Solution simple et entièrement gérée pour la livraison continue de données de streaming vers des destinations analytiques comme Amazon S3, Redshift, ou Elasticsearch. Parfait lorsque vous voulez gérer le moins d'infrastructure possible et que vous avez besoin de transformations légères.
+
+- **Kinesis Data Streams** : Adapté aux besoins de streaming complexes où plusieurs consommateurs doivent traiter les mêmes flux de données en temps réel. Utilisé lorsque vous avez besoin d'un contrôle granulaire sur la gestion du flux de données et de la flexibilité pour créer des applications de traitement de flux personnalisées.
+
+Cette table vous aide à choisir le service en fonction de vos besoins spécifiques pour l'ingestion, la transformation et l'analyse des données en temps réel.
