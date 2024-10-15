@@ -26,7 +26,7 @@
 
 3. **Rôle des services AWS** : Discutez de l'importance des services AWS utilisés dans chaque pipeline pour assurer une ingestion fluide, un traitement efficace, un stockage approprié, et une visualisation performante des données.
 
-4. **Cas d'usage** : Proposez un cas d'usage spécifique pour lequel chaque pipeline serait le plus adapté, en justifiant votre choix en fonction de la nature des données (en temps réel, données volumineuses, données complexes, etc.)."
+4. **Cas d'usage** : Proposez un exemple de cas d'usage spécifique pour lequel chaque pipeline serait le plus adapté, en justifiant votre choix en fonction de la nature des données (en temps réel, données volumineuses, données complexes, etc.)."
 
 
 -----------------
