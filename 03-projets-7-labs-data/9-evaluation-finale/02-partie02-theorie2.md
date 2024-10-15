@@ -47,4 +47,4 @@ L'entreprise souhaite :
 
 **Question :**
 
-"En fonction des exigences énoncées ci-dessus, proposez une architecture de pipeline de données sur AWS qui permet de répondre aux besoins de cette entreprise. Décrivez les services AWS que vous utiliseriez à chaque étape du pipeline (ingestion, traitement, stockage, analyse et visualisation). Justifiez vos choix de services en fonction des exigences de traitement en temps réel, du volume élevé de données et de la nécessité d'une analyse rapide et précise. Dessinez ensuite l'architecture de votre pipeline et expliquez comment elle fonctionne de bout en bout."
+*En fonction des exigences énoncées ci-dessus, proposez une architecture de pipeline de données sur AWS qui permet de répondre aux besoins de cette entreprise. Décrivez les services AWS que vous utiliseriez à chaque étape du pipeline (ingestion, traitement, stockage, analyse et visualisation). Justifiez vos choix de services en fonction des exigences de traitement en temps réel, du volume élevé de données et de la nécessité d'une analyse rapide et précise. Dessinez ensuite l'architecture de votre pipeline et expliquez comment elle fonctionne de bout en bout.*
