@@ -5,7 +5,7 @@
 ---
 
 ### **Question 1.**  
-Une entreprise collecte des données de capteurs IoT en continu depuis des milliers d'appareils dans une usine. Leur besoin principal est de stocker ces données dans **Amazon S3** pour les analyser plus tard. Ils ne veulent pas gérer les flux en temps réel, mais cherchent une solution qui regroupe les données et les livre efficacement au stockage. Quels service(s) AWS sont les plus adaptés à ce besoin ?  
+Une entreprise collecte des données de capteurs IoT en continu depuis des milliers d'appareils dans une usine. Leur besoin principal est de stocker ces données dans **Amazon S3** pour les analyser plus tard. Ils ne veulent pas gérer les flux en temps réel, mais cherchent une solution qui regroupe les données et les livre efficacement au stockage. Quel(s) service(s) AWS sont les plus adaptés à ce besoin ?  
 - A. Kinesis Data Firehose  
 - B. Kinesis Data Streams  
 - C. AWS Lambda  
