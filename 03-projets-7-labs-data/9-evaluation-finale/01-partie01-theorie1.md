@@ -1,6 +1,6 @@
 # Partie 01 - Quiz avec *justification de la réponse* de 18h à 20h
 
-### **Pour chaque scénario décrit dans les questions suivantes, choisissez le ou les services AWS les plus adaptés. Justifiez votre choix en expliquant votre (ou vos) choix et pourquoi vous avez éliminé les autres options.**
+### *Pour chaque scénario décrit dans les questions suivantes, choisissez le ou les services AWS les plus adaptés. Justifiez votre choix en expliquant votre (ou vos) choix et pourquoi vous avez éliminé les autres options.*
 
 ---
 
