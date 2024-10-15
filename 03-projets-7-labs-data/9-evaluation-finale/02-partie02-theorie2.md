@@ -5,7 +5,7 @@
 -----------------
 
 
-"À partir des trois diagrammes représentant différentes architectures de pipeline de données (pipeline1, pipeline2, pipeline3), expliquez en détail les étapes clés de chaque pipeline, en mettant en évidence les aspects suivants :
+*À partir des trois diagrammes représentant différentes architectures de pipeline de données (pipeline1, pipeline2, pipeline3), expliquez les étapes clés de chaque pipeline, en mettant en évidence les aspects suivants :*
 
 ### Pipeline 1
 ![pipeline1](https://github.com/user-attachments/assets/84ed9186-a77d-40a4-b97f-13e939596ad4)
