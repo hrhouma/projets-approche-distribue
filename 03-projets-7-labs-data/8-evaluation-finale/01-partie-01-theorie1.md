@@ -1,4 +1,8 @@
-### Examen : Études de cas AWS S3, Glue, Redshift et Lambda
+# Partie 01 - Quiz avec *justification de la réponse* 
+
+### *Pour chaque scénario décrit dans les questions suivantes, choisissez le ou les services AWS les plus adaptés. Justifiez votre choix en expliquant votre (ou vos) choix et pourquoi vous avez éliminé les autres options.*
+
+-----------
 
 #### Cas 1 :
 **Scénario :** Vous avez besoin d’un stockage économique pour conserver des fichiers journaux non structurés provenant de plusieurs systèmes pendant de longues périodes. Ces données ne seront pas souvent requêtées, mais doivent être accessibles si nécessaire.
