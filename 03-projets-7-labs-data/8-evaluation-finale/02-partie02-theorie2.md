@@ -14,7 +14,7 @@
 6. **[Travail 6](https://aws.amazon.com/fr/blogs/big-data/build-and-orchestrate-etl-pipelines-using-amazon-athena-and-aws-step-functions/)** : Orchestration des pipelines ETL avec Amazon Athena et AWS Step Functions.
 7. **[Travail 7](https://medium.com/@yaroslavzhbankov/architecting-scalable-data-analytics-harnessing-aws-athena-glue-s3-lambda-and-api-gateway-5e991d46c273)** : Architecture analytique évolutive avec AWS Athena, Glue, S3, Lambda et API Gateway.
 
-### **Instructions pour répondre :**
+# **Instructions pour répondre :**
 
 1. **Description du pipeline choisi** :
    - Expliquez les étapes clés du pipeline de données que vous avez choisi, de l'acquisition des données jusqu'à leur transformation, stockage, et analyse/visualisation.
