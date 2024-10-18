@@ -1,50 +1,36 @@
-# Partie 02- 2 Questions de développements de 20h à 22h
+# **Partie 02 - Question de développement**
 
------------------
-# Question 1
------------------
+---
 
+*À partir des différents travaux de conception de pipelines de données listés ci-dessous, choisissez l’un des travaux et décrivez-le en détail. Vous devrez répondre aux points suivants :*
 
-*À partir des trois diagrammes représentant différentes architectures de pipeline de données (pipeline1, pipeline2, pipeline3), expliquez les étapes clés de chaque pipeline, en mettant en évidence les aspects suivants :*
+### Liste des travaux :
 
-### Pipeline 1
-![pipeline1](https://github.com/user-attachments/assets/84ed9186-a77d-40a4-b97f-13e939596ad4)
+1. **[Travail 1](https://medium.com/@dogukannulu/aws-cloud-data-engineering-end-to-end-project-aws-glue-etl-job-s3-apache-spark-967d6ebe1d88)** : Pipeline avec AWS Glue ETL, S3, et Apache Spark.
+2. **[Travail 2](https://medium.com/@dogukannulu/creating-quicksight-dashboards-using-amazon-redshift-and-athena-b503a8f937bf)** : Création de tableaux de bord QuickSight avec Redshift et Athena.
+3. **[Travail 3](https://medium.com/@ifeanyiobiana/data-analysis-made-easy-s3-aws-glue-athena-and-quicksight-22125e36b3ae)** : Analyse de données avec S3, AWS Glue, Athena, et QuickSight.
+4. **[Travail 4](https://blog.det.life/how-to-build-a-data-pipeline-with-aws-glue-and-terraform-ac1ace165d29)** : Construction d’un pipeline de données avec AWS Glue et Terraform.
+5. **[Travail 5](https://www.cloudthat.com/resources/blog/building-real-time-data-pipelines-with-aws-glue)** : Construction de pipelines de données en temps réel avec AWS Glue.
+6. **[Travail 6](https://aws.amazon.com/fr/blogs/big-data/build-and-orchestrate-etl-pipelines-using-amazon-athena-and-aws-step-functions/)** : Orchestration des pipelines ETL avec Amazon Athena et AWS Step Functions.
+7. **[Travail 7](https://medium.com/@yaroslavzhbankov/architecting-scalable-data-analytics-harnessing-aws-athena-glue-s3-lambda-and-api-gateway-5e991d46c273)** : Architecture analytique évolutive avec AWS Athena, Glue, S3, Lambda et API Gateway.
 
-### Pipeline 2
-![pipeline2](https://github.com/user-attachments/assets/6aeb023f-50a7-44c3-b028-05b98817ab02)
+### **Instructions pour répondre :**
 
-### Pipeline 3
-![pipeline3](https://github.com/user-attachments/assets/f82ef59e-a43a-4e2f-849a-f2c0eda01016)
+1. **Description du pipeline choisi** :
+   - Expliquez les étapes clés du pipeline de données que vous avez choisi, de l'acquisition des données jusqu'à leur transformation, stockage, et analyse/visualisation.
 
-1. **Description de chaque pipeline** : Décrivez les différentes étapes du traitement des données dans chaque pipeline, depuis l'ingestion jusqu'à la visualisation ou l'analyse des données.
-   
-2. **Comparaison** : Identifiez les similitudes et les différences entre ces pipelines en termes de :
-   - Acquisition des données
-   - Transformation des données
-   - Stockage des données
-   - Analyse des données
+2. **Justification des choix de services AWS** :
+   - Décrivez les services AWS utilisés dans le pipeline (ex. S3, Glue, Athena, Lambda, etc.). Pourquoi ces services spécifiques ont-ils été choisis pour chaque étape du pipeline ? En quoi facilitent-ils l'ingestion, le traitement, et l'analyse des données ?
 
-3. **Rôle des services AWS** : Discutez de l'importance des services AWS utilisés dans chaque pipeline pour assurer une ingestion fluide, un traitement efficace, un stockage approprié, et une visualisation performante des données.
+3. **Critique et proposition d'amélioration** :
+   - Critiquez les choix effectués. Estimez-vous que les services AWS sélectionnés sont les meilleurs pour cette architecture ? Justifiez vos réponses.
+   - **Proposez une alternative** : Faites des recherches sur des solutions alternatives ou des services AWS similaires qui pourraient être utilisés pour remplacer certains services dans ce pipeline (par exemple, remplacer **Athena** par **Redshift Spectrum**, ou **AWS Glue** par un autre outil ETL).
+   - Expliquez en quoi votre proposition rendrait le pipeline plus performant, plus rentable ou plus simple à maintenir.
 
-4. **Cas d'usage** : Proposez un exemple de cas d'usage spécifique pour lequel chaque pipeline serait le plus adapté, en justifiant votre choix en fonction de la nature des données (en temps réel, données volumineuses, données complexes, etc.)."
+4. **Facilités et complexités** :
+   - Identifiez les éléments du pipeline que vous jugez simples à mettre en place ou à maintenir, ainsi que ceux qui semblent plus complexes.
+   - **Recherche complémentaire** : Proposez des moyens de réduire cette complexité (recherche d'alternatives plus faciles à gérer, automatisation, etc.). L'objectif ici est de chercher et de critiquer en vue de proposer des solutions plus efficaces ou simples.
 
+### **Conclusion** :
+- Donnez une opinion personnelle sur l’efficacité globale du pipeline choisi, à la lumière de vos recherches et de vos critiques. Quelles seraient vos recommandations finales pour optimiser ou adapter ce pipeline à d'autres besoins ou contextes ?
 
------------------
-# Question 2
------------------
-
-**Étude de cas :**
-
-Une entreprise de vente en ligne souhaite améliorer sa capacité à analyser en temps réel les comportements d'achat de ses clients. L'objectif est de détecter immédiatement les tendances d'achat, les produits populaires, et de réagir rapidement aux événements de vente, tels que des pics d'achats soudains lors de promotions. Les données à traiter incluent des milliers de transactions par seconde, comprenant des informations sur les produits, les prix, les clients, et les régions géographiques.
-
-L'entreprise souhaite :
-1. Ingestion des données en temps réel, car les transactions doivent être analysées dès qu'elles se produisent.
-2. Une transformation des données en continu, avec une vérification de la validité (comme la cohérence des prix ou des données clients) avant qu'elles ne soient stockées.
-3. Un stockage des données qui permet à la fois d'accéder rapidement aux données pour des analyses immédiates, mais aussi de conserver les données historiques pour des analyses futures.
-4. Un système qui permet de visualiser les données en temps réel et d'obtenir des rapports réguliers sur les tendances de vente.
-5. Une approche évolutive qui peut gérer des augmentations soudaines du volume de données, par exemple, lors des soldes ou événements spéciaux.
-6. Des coûts maîtrisés et une architecture gérable par une petite équipe DevOps.
-
-**Question :**
-
-*En fonction des exigences énoncées ci-dessus, proposez une architecture de pipeline de données sur AWS qui permet de répondre aux besoins de cette entreprise. Décrivez les services AWS que vous utiliseriez à chaque étape du pipeline (ingestion, traitement, stockage, analyse et visualisation). Justifiez vos choix de services en fonction des exigences de traitement en temps réel, du volume élevé de données et de la nécessité d'une analyse rapide et précise. Dessinez ensuite l'architecture de votre pipeline et expliquez comment elle fonctionne de bout en bout.*
