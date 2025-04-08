@@ -203,3 +203,6 @@ Image Docker (ECR)               TaskDef + AppSpec
                                            │
                                 Load Balancer (ALB)
 ```
+
+![image](https://github.com/user-attachments/assets/fe2afa04-53c9-467c-a354-b033c5ad4c20)
+
