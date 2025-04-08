@@ -1,3 +1,7 @@
+<br/>
+<br/>
+
+
 # *Résumé de la Phase 4 :*
 
 - Configuration de l'application en deux microservices (customer et employee) et test dans des conteneurs Docker :
@@ -97,4 +101,64 @@ Cette phase vise à **transformer une application monolithique en deux microserv
 
 - Utilisation de Git pour **committer et pousser** les modifications du code source vers CodeCommit.
 - Vérification des différences entre commits dans l’interface AWS Cloud9 ou CodeCommit.
+
+
+<br/>
+<br/>
+
+# Annexe 1 : 
+
+
+## **Pourquoi configurer deux microservices séparés (customer et employee) ?**
+
+Parce que dans une **architecture microservices**, chaque service est :
+- **Responsable d’une fonction métier bien précise**
+- **Autonome** et peut évoluer indépendamment
+- **Déployable séparément**, ce qui réduit les risques lors des mises à jour
+
+👉 Ici :
+- `customer` = accès **lecture seule** pour les clients
+- `employee` = accès **lecture + écriture** pour les employés
+
+
+
+##  **Pourquoi modifier les ports (8080 et 8081) ?**
+
+- Chaque conteneur Docker s'exécute sur un **port spécifique** sur la machine hôte (Cloud9).
+- On ne peut pas faire tourner deux services sur le **même port** sans provoquer un conflit.
+- 8080 pour `customer` et 8081 pour `employee`, puis **standardiser à 8080 pour ECS**, où chaque service a son propre environnement isolé.
+
+
+##  **Pourquoi adapter le code source ?**
+
+- Pour respecter le **principe de séparation des responsabilités** :
+  - `customer` : accès limité (lecture uniquement), pas de boutons d’ajout/édition.
+  - `employee` : interface complète (ajout, édition, suppression).
+- Les chemins `/admin/` sont nécessaires pour que l’**Application Load Balancer (ALB)** sache **où router chaque requête** selon l’URL.
+
+
+
+##  **Pourquoi créer des Dockerfiles et tester localement ?**
+
+- Le `Dockerfile` est ce qui permet de **construire une image portable** du microservice.
+- Tester dans un conteneur local **avant de déployer** permet de s’assurer que :
+  - Le service fonctionne comme attendu.
+  - L’image est correcte.
+  - Le port est bien exposé.
+
+
+
+##  **Pourquoi stocker le code dans AWS CodeCommit ?**
+
+- Suivi des modifications avec Git.
+- Collaboration sécurisée dans un environnement AWS.
+- Préparation au **CI/CD** avec CodePipeline.
+
+
+
+##  **Pourquoi utiliser des variables d’environnement comme `APP_DB_HOST` ?**
+
+- Pour **découpler le code de la configuration**.
+- Cela permet d'utiliser le **même code** en local, sur ECS, ou ailleurs — seule la variable change.
+- C’est un **principe fondamental de l'approche "12-factor app"**.
 
