@@ -295,9 +295,7 @@ Because of the need to route traffic, much of the work in this task is to config
 
 ``` bash
 cd ~/environment/microservices/employee
-
 grep -n 'redirect' ./app/controller/supplier.controller.
-
 ```
 
 ![alt text](images/image-36.png)
@@ -318,15 +316,15 @@ grep -n 'app.get\|app.post' index.js
 
 ![alt text](images/image-39.png)
 
-         Important: After you edit line 22, the path should be /admin, not /admin/
+Important: After you edit line 22, the path should be /admin, not /admin/
 
 ![alt text](images/image-41.png)
 
-        On line 45, change the port number to 8081
+On line 45, change the port number to 8081
 
 ![alt text](images/image-42.png)
 
-         Note: When you run both the customer and employee microservice containers on the AWS Cloud9 instance as a test, they will need to use different port numbers so that they won't conflict with each other.
+Note: When you run both the customer and employee microservice containers on the AWS Cloud9 instance as a test, they will need to use different port numbers so that they won't conflict with each other.
 
 
 ### 5.  In the employee/views/supplier-add.html and employee/views/supplier-update.html files, for the form action paths, prepend /admin to the path.
@@ -380,7 +378,7 @@ After update:
 <a class="nav-link" href="/">Customer home</a>
 
 ```
-```
+
 
 ![alt text](images/image-50.png)
 
