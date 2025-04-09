@@ -296,7 +296,7 @@ Because of the need to route traffic, much of the work in this task is to config
 ``` bash
 cd ~/environment/microservices/employee
 
-grep -n 'redirect' app/controller/supplier.controller.
+grep -n 'redirect' ./app/controller/supplier.controller.
 
 ```
 
