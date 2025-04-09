@@ -375,11 +375,14 @@ After update:
 
      Important: DON'T delete or overwrite any of the existing lines in the file.
 
-    ```
-    <a class="nav-link" href="/">Customer home</a>
-    ```
+```
 
-    ![alt text](images/image-50.png)
+<a class="nav-link" href="/">Customer home</a>
+
+```
+```
+
+![alt text](images/image-50.png)
 
 
 
